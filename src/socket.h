@@ -39,6 +39,8 @@ class Socket{
     
     char*    str;
     char buf [BUF_LEN];
+    
+    unsigned short id;
     public:
         
         /**
@@ -77,9 +79,21 @@ class Socket{
          */
         void IMAPlogout();
         
+        void IMAPSelect(std::string);
+        
+        void IMAPExamine(std::string);
+        
+        void IMAPCreate(std::string);
+        
+        void IMAPDelete(std::string);
+        
+        void IMAPRename(std::string, std::string);
+        
         void send(std::string);
         
         std::string recieve();
+        
+        std::string get_id();
         
 };  
 

@@ -1,8 +1,43 @@
 #include "socket.h"
 
+#include <random>
+#include <regex>
+
 void dieWithError(std::string s){
     std::cerr << s.c_str();
     throw s;
+}
+
+std::string Socket::get_id()
+{    
+    std::string s = "a";// + std::to_string(id);
+    id++;
+    return s;
+}
+
+short check_response(std::string response, std::string id_string){
+    
+    response.erase(std::remove(response.begin(), response.end(), '\n'), response.end());
+    response.erase(std::remove(response.begin(), response.end(), '\r'), response.end());
+    
+    std::string OKstr = ".*" + id_string + " [Oo][Kk].*";
+    std::regex OKrgx(OKstr);
+    if (std::regex_match (response, OKrgx ))
+        return 1;
+            
+    std::string NOrgx = ".*" + id_string + " [Nn][Oo].*";        
+    if (std::regex_match (response, std::regex(NOrgx) )){
+        std::cout << "Command failure: " << response;
+        return 0;
+    }
+    
+    std::string BADrgx = ".*" + id_string + " [Bb][Aa][Dd].*";
+    if (std::regex_match (response, std::regex(BADrgx) )){
+        std::cout << "Invalid command: " << response;
+        return -1;
+    }
+    
+    std::cout << "Program must not reach here .........................." << std::endl << std::endl;
 }
 
 Socket::Socket(std::string hostname, int serverport){
@@ -71,44 +106,95 @@ Socket::Socket(std::string hostname, int serverport){
     
     std::cout << "Got " << std::to_string(reply.length()) << " chars:" << reply;
     
-    std::cout << "Connection established to mail server." << std::endl; 
+    std::cout << "Connection established to mail server." << std::endl;
+    
+    id = 0; 
 }
 
 void Socket::IMAPConnect(std::string username, std::string pass){
     
-    std::string command = "a login " + username + " " + pass + "\r\n";
+    std::string id_string = get_id();
+    std::string command = id_string + " login " + username + " " + pass + "\r\n";
     send(command);
-    recieve();
+    std::string response = recieve();
+    check_response(response, id_string);
 }
 
 void Socket::IMAPList(std::string mailbox, std::string search){
     
-    std::string command = "a list \"" + mailbox + "\" \"" + search + "\"\r\n";
+    std::string id_string = get_id();
+    std::string command = id_string + " list \"" + mailbox + "\" \"" + search + "\"\r\n";
     send(command);
-    recieve();
+    std::string response = recieve();
+    check_response(response, id_string);
 }
 
 void Socket::IMAPStatus(std::string mailbox, std::string status){
     // FIXME
-    std::string command = "a status " + mailbox + " (" + status + ")\r\n";
+    std::string id_string = get_id();
+    std::string command = id_string + " status " + mailbox + " (" + status + ")\r\n";
     send(command);
-    recieve(); 
+    std::string response = recieve();
+    check_response(response, id_string); 
 }
 
 void Socket::IMAPNoop(){
     
-    std::string command = "a noop\r\n";
+    std::string id_string = get_id();
+    std::string command = id_string + " nop\r\n";
     send(command);
-    recieve();
+    std::string response = recieve();
+    check_response(response, id_string);
 }
 
 void Socket::IMAPlogout(){
     // FIXME Client has to end the connection.
-    std::string command = "a logout\r\n";
+    std::string id_string = get_id();
+    std::string command = id_string + " logout\r\n";
     send(command);
-    recieve();
+    std::string response = recieve();
+    check_response(response, id_string);
 }
 
+void Socket::IMAPSelect(std::string mailbox){
+    std::string id_string = get_id();
+    std::string command = id_string + " select " + mailbox +"\r\n";
+    send(command);
+    std::string response = recieve();
+    check_response(response, id_string);
+}
+
+void Socket::IMAPExamine(std::string mailbox){
+    std::string id_string = get_id();
+    std::string command = id_string + " examine " + mailbox +"\r\n";
+    send(command);
+    std::string response = recieve();
+    check_response(response, id_string);
+}
+
+void Socket::IMAPCreate(std::string mailbox){
+    std::string id_string = get_id();
+    std::string command = id_string + " create " + mailbox +"\r\n";
+    send(command);
+    std::string response = recieve();
+    check_response(response, id_string);
+}
+
+void Socket::IMAPDelete(std::string mailbox){
+    std::string id_string = get_id();
+    std::string command = id_string + " delete " + mailbox +"\r\n";
+    send(command);
+    std::string response = recieve();
+    check_response(response, id_string);
+}
+
+void Socket::IMAPRename(std::string oldname, std::string newname){
+    std::string id_string = get_id();
+    std::string command = id_string + " rename " + oldname + " " + newname + "\r\n";
+    send(command);
+    std::string response = recieve();
+    check_response(response, id_string);
+}
 void Socket::send(std::string message){
     int err;
     
