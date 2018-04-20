@@ -1,80 +1,68 @@
 #include "socket.h"
 
-#include <random>
-#include <regex>
+#include <iostream>
+#include <string>
+// #include <unistd.h>
 
-void dieWithError(std::string s){
-    std::cerr << s.c_str();
-    throw s;
+#include <sys/socket.h>
+#include <sys/types.h>
+
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
+#include <openssl/crypto.h>
+#include <openssl/x509.h>
+#include <openssl/pem.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+
+#define CHK_NULL(x) if ((x)==NULL) exit (1)
+#define CHK_ERR(err,s) if ((err)==-1) { perror(s); exit(1); }
+#define CHK_SSL(err) if ((err)==-1) { ERR_print_errors_fp(stderr); exit(2); }
+
+Socket::Socket(std::string &hostname, int port) {
+	sockid = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == -1) {
+		// TODO Handle this error gracefully
+	}
+
+	struct sockaddr_in servaddr;
+	memset(&servaddr, '\0', sizeof(servaddr));
+	struct hostent *hp;
+
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_port = htons(serverport);
+
+	// TODO find the ip address after dns (How to do?)
+	
+	inet_pton(AF_INET,"204.141.32.119",&(servaddr.sin_addr));
+
+	if(connect(sockid, (struct sockaddr *)&servaddr,sizeof(servaddr)) == -1) {
+		// TODO handle this error gracefully
+	}
+
 }
 
-std::string Socket::get_id()
-{    
-    std::string s = "a";// + std::to_string(id);
-    id++;
-    return s;
-}
+void Socket::createSSL() {
 
-short check_response(std::string response, std::string id_string){
+	SSL_CTX* ctx;
+    SSL*     ssl;
+    X509* server_cert;
     
-    response.erase(std::remove(response.begin(), response.end(), '\n'), response.end());
-    response.erase(std::remove(response.begin(), response.end(), '\r'), response.end());
-    
-    std::string OKstr = ".*" + id_string + " [Oo][Kk].*";
-    std::regex OKrgx(OKstr);
-    if (std::regex_match (response, OKrgx ))
-        return 1;
-            
-    std::string NOrgx = ".*" + id_string + " [Nn][Oo].*";        
-    if (std::regex_match (response, std::regex(NOrgx) )){
-        std::cout << "Command failure: " << response;
-        return 0;
-    }
-    
-    std::string BADrgx = ".*" + id_string + " [Bb][Aa][Dd].*";
-    if (std::regex_match (response, std::regex(BADrgx) )){
-        std::cout << "Invalid command: " << response;
-        return -1;
-    }
-    
-    std::cout << "Program must not reach here .........................." << std::endl << std::endl;
-}
+    char*    str;
+    char buf [BUF_LEN];
 
-Socket::Socket(std::string hostname, int serverport){
-    
     OpenSSL_add_ssl_algorithms();
     const SSL_METHOD* meth = TLSv1_2_client_method();
     SSL_load_error_strings();
     ctx = SSL_CTX_new (meth); CHK_NULL(ctx);
-    
-    if((sockid = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-        dieWithError("Creation failed\n");  
-    
-    //bzero(&servaddr,sizeof(servaddr));
-    memset (&servaddr, '\0', sizeof(servaddr));
-    
-    struct hostent *hp;
 
-    /*if((hp = gethostbyname(hostname.c_str())) == NULL)
-        dieWithError("Could not resolve hostname\n");
-
-    std::memcpy(hp->h_addr, &servaddr.sin_addr, hp->h_length);
-    //servaddr.sin_addr = hp->h_addr;
-    std::cout << hp->h_addr << " " << hp->h_name << " "  << hp->h_addr_list[1] << inet_ntoa(servaddr.sin_addr) << std::endl;*/
-    
-    servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(serverport);
-	inet_pton(AF_INET,"204.141.32.119",&(servaddr.sin_addr)); // Set the IP address
-	if(connect(sockid, (struct sockaddr *)&servaddr,sizeof(servaddr)) == -1)
-        dieWithError("Connect to server failed\n");
-        
     ssl = SSL_new (ctx);                         CHK_NULL(ssl);    
     SSL_set_fd (ssl, sockid);
     int err = SSL_connect (ssl); CHK_SSL(err);
 
     printf ("SSL connection using %s\n", SSL_get_cipher (ssl));
-  
-    /* Get server's certificate (note: beware of dynamic allocation) - opt */
 
     server_cert = SSL_get_peer_certificate (ssl);       CHK_NULL(server_cert);
     printf ("Server certificate:\n");
@@ -89,118 +77,25 @@ Socket::Socket(std::string hostname, int serverport){
     printf ("\t issuer: %s\n", str);
     OPENSSL_free (str);
 
-    /* We could do all sorts of certificate verification stuff here before
-     deallocating the certificate. */
-
     X509_free (server_cert);
 
     std::string reply = "";
 
     do{
-    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
-    CHK_SSL(err);
-    buf[err] = '\0';
-    
-    reply += std::string(buf);
+	    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
+	    CHK_SSL(err);
+	    buf[err] = '\0';
+	    
+	    reply += std::string(buf);
     }while(err == sizeof(buf) - 1);
     
     std::cout << "Got " << std::to_string(reply.length()) << " chars:" << reply;
     
     std::cout << "Connection established to mail server." << std::endl;
-    
-    id = 0; 
 }
 
-void Socket::IMAPConnect(std::string username, std::string pass){
-    
-    std::string id_string = get_id();
-    std::string command = id_string + " login " + username + " " + pass + "\r\n";
-    send(command);
-    std::string response = recieve();
-    check_response(response, id_string);
-}
-
-void Socket::IMAPList(std::string mailbox, std::string search){
-    
-    std::string id_string = get_id();
-    std::string command = id_string + " list \"" + mailbox + "\" \"" + search + "\"\r\n";
-    send(command);
-    std::string response = recieve();
-    check_response(response, id_string);
-}
-
-void Socket::IMAPStatus(std::string mailbox, std::string status){
-    // FIXME
-    std::string id_string = get_id();
-    std::string command = id_string + " status " + mailbox + " (" + status + ")\r\n";
-    send(command);
-    std::string response = recieve();
-    check_response(response, id_string); 
-}
-
-void Socket::IMAPNoop(){
-    
-    std::string id_string = get_id();
-    std::string command = id_string + " nop\r\n";
-    send(command);
-    std::string response = recieve();
-    check_response(response, id_string);
-}
-
-void Socket::IMAPlogout(){
-    // FIXME Client has to end the connection.
-    std::string id_string = get_id();
-    std::string command = id_string + " logout\r\n";
-    send(command);
-    std::string response = recieve();
-    check_response(response, id_string);
-}
-
-void Socket::IMAPSelect(std::string mailbox){
-    std::string id_string = get_id();
-    std::string command = id_string + " select " + mailbox +"\r\n";
-    send(command);
-    std::string response = recieve();
-    check_response(response, id_string);
-}
-
-void Socket::IMAPExamine(std::string mailbox){
-    std::string id_string = get_id();
-    std::string command = id_string + " examine " + mailbox +"\r\n";
-    send(command);
-    std::string response = recieve();
-    check_response(response, id_string);
-}
-
-void Socket::IMAPCreate(std::string mailbox){
-    std::string id_string = get_id();
-    std::string command = id_string + " create " + mailbox +"\r\n";
-    send(command);
-    std::string response = recieve();
-    check_response(response, id_string);
-}
-
-void Socket::IMAPDelete(std::string mailbox){
-    std::string id_string = get_id();
-    std::string command = id_string + " delete " + mailbox +"\r\n";
-    send(command);
-    std::string response = recieve();
-    check_response(response, id_string);
-}
-
-void Socket::IMAPRename(std::string oldname, std::string newname){
-    std::string id_string = get_id();
-    std::string command = id_string + " rename " + oldname + " " + newname + "\r\n";
-    send(command);
-    std::string response = recieve();
-    check_response(response, id_string);
-}
-void Socket::send(std::string message){
-    int err;
-    
-    std::cout << message;
-    
-    err = SSL_write (ssl, message.c_str(), message.size());
+bool Socket::send(std::string &s) {
+	int err = SSL_write (ssl, message.c_str(), message.size());
     CHK_SSL(err);
 }
 
@@ -209,11 +104,11 @@ std::string Socket::recieve(){
     int err;
     
     do{
-    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
-    CHK_SSL(err);
-    buf[err] = '\0';
-    
-    reply += std::string(buf);
+	    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
+	    CHK_SSL(err);
+	    buf[err] = '\0';
+	    
+	    reply += std::string(buf);
     }while(err == sizeof(buf) - 1);
     
     std::cout << "Got " << std::to_string(reply.length()) << " chars:" << reply;
@@ -228,22 +123,3 @@ Socket::~Socket(){
     SSL_CTX_free (ctx);
     std::cout << "Closed connection to mail server" << std::endl;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
