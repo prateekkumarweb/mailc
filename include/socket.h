@@ -20,9 +20,8 @@
 
 class Socket {
 public:
-	Socket();
-	std::tuple<bool, std::string> create(std::string &hostname, int port);
-	void createSSL();
+	std::tuple<bool, std::string> create(std::string hostname, int port);
+	std::tuple<bool, std::string> createSSL();
 	bool send(std::string &s);
 	std::string receive();
 	~Socket();

@@ -2,6 +2,12 @@
 #define IMAP_H
 
 #include <tuple>
+#include <string>
+#include <vector>
+#include <regex>
+#include <iostream>
+
+#include "socket.h"
 
 struct Mail {
     std::string mailbox;
@@ -17,8 +23,8 @@ struct Mail {
 
 class IMAPConnection {
 public:
-	IMAPConnection(std::string &hostname, int port);
-	bool login(std::string &username, std::string &password); // OK, NO, BAD
+	IMAPConnection(std::string hostname, int port);
+	bool login(std::string username, std::string password); // OK, NO, BAD
 
 	bool noop(); // OK, BAD
 	bool logout();
@@ -27,11 +33,11 @@ public:
 
 	std::vector<Mail> getTopMails(const std::string &mailbox, int k);
 	
-	Mail getMail(const std::string &mailbox, const std::string uid);
+	Mail getMail(const std::string &mailbox, const int uid);
 
 	bool deleteMail(Mail mail);
 
-	std::tuple getCount(const std::string &mailbox);
+	std::tuple<int, int, int> getCount(const std::string &mailbox);
 
 	bool createMailbox(std::string &mailbox);
 
@@ -39,17 +45,16 @@ public:
 
 	bool deleteMailbox(std::string &mailbox);
 
-	Mail getMail(... uid);
+	// std::vector<Mail> search(???);
 
-	std::vector<Mail> search(???);
+	// std::vector<??> listFolders(const std::string &mailbox, ?? (Wildcard));
 
-	std::vector<??> listFolders(const std::string &mailbox, ?? (Wildcard));
-
-	~IMAPConnection();
+	// ~IMAPConnection();
 private:
 	Socket socket;
 	std::string username;
 	std::string password;
+	bool check_response(std::string &response, std::string &id_string);
 };
 
 #endif

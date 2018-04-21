@@ -1,4 +1,4 @@
-#include "socket.h"
+#include "imap.h"
 
 int main(){
     // Socket client("pop.zoho.com", 993);
@@ -17,5 +17,12 @@ int main(){
     // client.IMAPList("", "*");
     // //client.IMAPStatus("INBOX", "MESSAGES");
     // client.IMAPlogout();
+
+    std::string hostname = "imap.zoho.com";
+
+    IMAPConnection imap(hostname, 993);
+
+    imap.login("test@prateekkumar.in", "testtest");
+
     return 0;
 }
