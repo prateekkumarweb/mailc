@@ -1,97 +1,94 @@
 #include "socket.h"
 
 #include <iostream>
-#include <string>
-// #include <unistd.h>
-
-#include <sys/socket.h>
-#include <sys/types.h>
-
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netdb.h>
-
-#include <openssl/crypto.h>
-#include <openssl/x509.h>
-#include <openssl/pem.h>
-#include <openssl/ssl.h>
-#include <openssl/err.h>
 
 #define CHK_NULL(x) if ((x)==NULL) exit (1)
 #define CHK_ERR(err,s) if ((err)==-1) { perror(s); exit(1); }
 #define CHK_SSL(err) if ((err)==-1) { ERR_print_errors_fp(stderr); exit(2); }
 
-Socket::Socket(std::string &hostname, int port) {
-	sockid = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock == -1) {
-		// TODO Handle this error gracefully
+std::tuple<bool, std::string> Socket::create(std::string &hostname, int port) {
+
+	struct hostent *host;
+	struct sockaddr_in addr;
+
+	if ((host == gethostbyname(hostname.c_str())) == NULL) {
+		std::cerr << hostname << std::endl;
+		return {false, "DNS failed."};
 	}
 
-	struct sockaddr_in servaddr;
-	memset(&servaddr, '\0', sizeof(servaddr));
-	struct hostent *hp;
+	sockid = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockid == -1) {
+		// TODO Handle this error gracefully
+		std::cerr << "Socket creation failed." << std::endl;
+		return {false, "Socket unable to create."};
+	}
 
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(serverport);
+	memset(&addr, '\0', sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	addr.sin_addr.s_addr = 	*(long *)(host->h_addr);
 
-	// TODO find the ip address after dns (How to do?)
-	
-	inet_pton(AF_INET,"204.141.32.119",&(servaddr.sin_addr));
-
-	if(connect(sockid, (struct sockaddr *)&servaddr,sizeof(servaddr)) == -1) {
-		// TODO handle this error gracefully
+	if(connect(sockid, (struct sockaddr *)&addr,sizeof(addr)) != 0) {
+		close(sockid);
+		return {false, "Socket connect failed."};
 	}
 
 }
 
-void Socket::createSSL() {
+std::tuple<bool, std::string> Socket::createSSL() {
+	SSL_METHOD *meth;
 
-	SSL_CTX* ctx;
-    SSL*     ssl;
-    X509* server_cert;
-    
-    char*    str;
-    char buf [BUF_LEN];
+	OpenSSL_add_all_algorithms();
+	SSL_load_error_strings();
 
-    OpenSSL_add_ssl_algorithms();
-    const SSL_METHOD* meth = TLSv1_2_client_method();
-    SSL_load_error_strings();
-    ctx = SSL_CTX_new (meth); CHK_NULL(ctx);
+	meth = TLSv1_2_client_method();
+	ctx = SSL_CTX_new(meth);
 
-    ssl = SSL_new (ctx);                         CHK_NULL(ssl);    
+	if (ctx == NULL) {
+		return {false, "OpenSSL SSL_CTX_new failed."}
+	}
+
+    char buf[1024];
+
+    X509 *cert;
+    char *str;
+
+    ssl = SSL_new(ctx);  
     SSL_set_fd (ssl, sockid);
-    int err = SSL_connect (ssl); CHK_SSL(err);
 
-    printf ("SSL connection using %s\n", SSL_get_cipher (ssl));
+    if (SSL_connect(ssl) == FAIL) {
+    	ERR_print_errors_fp(stderr);
+    } else {
+    	char *msg = "Hello???";
 
-    server_cert = SSL_get_peer_certificate (ssl);       CHK_NULL(server_cert);
-    printf ("Server certificate:\n");
+        printf("Connected with %s encryption\n", SSL_get_cipher(ssl));
+        {
+        	cert = SSL_get_peer_certificate(ssl); // How to get ssl?
 
-    str = X509_NAME_oneline (X509_get_subject_name (server_cert),0,0);
-    CHK_NULL(str);
-    printf ("\t subject: %s\n", str);
-    OPENSSL_free (str);
+		    if (cert != NULL) {
+		    	printf("Server certificates:\n");
+		        line = X509_NAME_oneline(X509_get_subject_name(cert), 0, 0);
+		        printf("Subject: %s\n", line);
+		        free(line);							/* free the malloc'ed string */
+		        line = X509_NAME_oneline(X509_get_issuer_name(cert), 0, 0);
+		        printf("Issuer: %s\n", line);
+		        free(line);							/* free the malloc'ed string */
+		        X509_free(cert);					/* free the malloc'ed certificate copy */
+		    } else {
+		    	return {false, "No certificate."};
+		    }
+        }
+        SSL_write(ssl, msg, strlen(msg));			/* encrypt & send message */
+        bytes = SSL_read(ssl, buf, sizeof(buf));	/* get reply & decrypt */
+        buf[bytes] = 0;
+        printf("Received: \"%s\"\n", buf);
+        SSL_free(ssl);
+    }
+}
 
-    str = X509_NAME_oneline (X509_get_issuer_name  (server_cert),0,0);
-    CHK_NULL(str);
-    printf ("\t issuer: %s\n", str);
-    OPENSSL_free (str);
-
-    X509_free (server_cert);
-
-    std::string reply = "";
-
-    do{
-	    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
-	    CHK_SSL(err);
-	    buf[err] = '\0';
-	    
-	    reply += std::string(buf);
-    }while(err == sizeof(buf) - 1);
-    
-    std::cout << "Got " << std::to_string(reply.length()) << " chars:" << reply;
-    
-    std::cout << "Connection established to mail server." << std::endl;
+Socket::~Socket() {
+	close(sockid);
+	SSL_CTX_free(ctx);
 }
 
 bool Socket::send(std::string &s) {
