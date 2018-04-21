@@ -39,7 +39,7 @@ public:
 
 	std::tuple<int, int, int> getCount(const std::string &mailbox);
 
-	bool createMailbox(std::string &mailbox);
+	bool createMailbox(std::string mailbox);
 
 	bool renameMailbox(std::string &oldmailbox, std::string &newmailbox);
 

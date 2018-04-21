@@ -8,6 +8,8 @@
 
 std::tuple<bool, std::string> Socket::create(std::string hostname, int port) {
 
+	ssl = NULL;
+
 	struct hostent *host;
 	struct sockaddr_in addr;
 
@@ -40,7 +42,7 @@ std::tuple<bool, std::string> Socket::create(std::string hostname, int port) {
 
 std::tuple<bool, std::string> Socket::createSSL() {
 
-	OpenSSL_add_all_algorithms();
+	OpenSSL_add_ssl_algorithms();
 	SSL_load_error_strings();
 
 	const SSL_METHOD *meth = TLSv1_2_client_method();
@@ -82,12 +84,21 @@ std::tuple<bool, std::string> Socket::createSSL() {
 		    	return std::make_tuple(false, "No certificate.");
 		    }
         }
-        SSL_write(ssl, msg, strlen(msg));			/* encrypt & send message */
-        std::cerr << ssl << std::endl;
-        int bytes = SSL_read(ssl, buf, sizeof(buf));	/* get reply & decrypt */
-        buf[bytes] = 0;
-        printf("Received: \"%s\"\n", buf);
-        SSL_free(ssl);
+        // SSL_write(ssl, msg, strlen(msg));			/* encrypt & send message */
+        // std::cerr << ssl << std::endl;
+
+        std::string reply = "";
+
+        int err = 0;
+
+        do {
+		    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
+		    CHK_SSL(err);
+		    buf[err] = '\0';		    
+		    reply += std::string(buf);
+	    } while(err == sizeof(buf) - 1);
+
+        std::cerr << "Received: " << reply << std::endl;
     }
 
     return std::make_tuple(true, "");
@@ -102,8 +113,7 @@ Socket::~Socket() {
 
 bool Socket::send(std::string &s) {
 	if (ssl == NULL) std::cerr << "IAMNULL" << std::endl;
-	std::cerr << ssl << std::endl;
-	int err = SSL_write (ssl, s.c_str(), s.size());
+	int err = SSL_write (ssl, s.c_str(), s.size()+1);
     CHK_SSL(err); // Graceful TODO
 }
 

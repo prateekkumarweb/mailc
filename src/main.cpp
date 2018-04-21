@@ -24,5 +24,7 @@ int main(){
 
     imap.login("test@prateekkumar.in", "testtest");
 
+    imap.createMailbox("TEST4");
+
     return 0;
 }

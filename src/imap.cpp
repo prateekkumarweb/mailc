@@ -1,14 +1,10 @@
 #include "imap.h"
 
 IMAPConnection::IMAPConnection(std::string hostname, int port) {
-    std::cerr << "IMAPConnection" << std::endl;
     std::tuple<bool, std::string> e = socket.create(hostname, port);
-    std::cerr << "IMAPConnection" << std::endl;
-    if(std::get<0>(e)) std::cerr << std::get<1>(e) << std::endl;
+    if(!std::get<0>(e)) std::cerr << std::get<1>(e) << std::endl;
     std::tuple<bool, std::string> e1 = socket.createSSL();
-    std::cerr << "IMAPConnection" << std::endl;
-    if(std::get<0>(e1)) std::cerr << std::get<1>(e1) << std::endl;
-    std::cerr << "IMAPConnection" << std::endl;
+    if(!std::get<0>(e1)) std::cerr << std::get<1>(e1) << std::endl;
 }
 
 bool IMAPConnection::login(std::string username, std::string password) {
@@ -31,17 +27,19 @@ bool IMAPConnection::check_response(std::string &response, std::string &id_strin
     // response.erase(std::remove(response.begin(), response.end(), '\n'), response.end());
     // response.erase(std::remove(response.begin(), response.end(), '\r'), response.end());
     
-    std::string OKrgx = id_string + " [Oo][Kk][.\\r\\n]*";
-    std::string NOrgx = id_string + " [Nn][Oo][.\\r\\n]*";
-    std::string BADrgx = id_string + " [Bb][Aa][Dd][.\\r\\n]*";
+    std::string OKrgx = id_string + " [Oo][Kk]";
+    std::string NOrgx = id_string + " [Nn][Oo]";
+    std::string BADrgx = id_string + " [Bb][Aa][Dd]";
     
-    if (std::regex_match (response, std::regex (OKrgx) ))
+    std::cerr << "response: " << response << " :response" << std::endl;
+
+    if (std::regex_search(response, std::regex (OKrgx) ))
         return 1;
             
-    if (std::regex_match (response, std::regex(NOrgx) ))
+    if (std::regex_search(response, std::regex(NOrgx) ))
         return 0;
     
-    if (std::regex_match (response, std::regex(BADrgx) )){
+    if (std::regex_search(response, std::regex(BADrgx) )){
         std::cerr << "[ERROR] BAD command: " << response;
         return 0;
     }
@@ -49,7 +47,7 @@ bool IMAPConnection::check_response(std::string &response, std::string &id_strin
     std::cerr << "Program must not reach here .........................." << std::endl << std::endl;
 }
 
-bool IMAPConnection::createMailbox(std::string &mailbox){
+bool IMAPConnection::createMailbox(std::string mailbox){
     std::string id_string = "a";
     std::string command = id_string + " create " + mailbox +"\r\n";
     socket.send(command);
