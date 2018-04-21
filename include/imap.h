@@ -1,8 +1,18 @@
 #ifndef IMAP_H
 #define IMAP_H
 
-class Mail {
-	// ?
+#include <tuple>
+
+struct Mail {
+    std::string mailbox;
+    int uid;
+    
+    std::string from;
+    std::string to;
+    std::string subject;
+    std::string date;
+    std::string text;
+    std::string html;
 };
 
 class IMAPConnection {
@@ -16,18 +26,16 @@ public:
 	std::vector<Mail> getUnseenMails(const std::string &mailbox);
 
 	std::vector<Mail> getTopMails(const std::string &mailbox, int k);
+	
+	Mail getMail(const std::string &mailbox, const std::string uid);
 
 	bool deleteMail(Mail mail);
 
-	int getUnseenCount(const std::string &mailbox);
-
-	int getTotalCount(const std::string &mailbox);
-
-	int getRecentCount(const std::string &mailbox);
+	std::tuple getCount(const std::string &mailbox);
 
 	bool createMailbox(std::string &mailbox);
 
-	bool renameMailbox(std::string &mailbox);
+	bool renameMailbox(std::string &oldmailbox, std::string &newmailbox);
 
 	bool deleteMailbox(std::string &mailbox);
 
