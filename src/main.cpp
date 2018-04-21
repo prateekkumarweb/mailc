@@ -24,7 +24,21 @@ int main(){
 
     imap.login("test@prateekkumar.in", "testtest");
 
-    imap.createMailbox("TEST4");
+    std::string s1 = "TEST5";
+    std::string s2 = "INBOX";
+
+    auto [a, b, c] = imap.getCount(s2);
+    std::cerr << a << " " << b << " " << c << std::endl;
+
+    Mail mail = imap.getMail("INBOX", 1);
+
+    std::cerr << mail.from << std::endl;
+    std::cerr << mail.to << std::endl;
+    std::cerr << mail.subject << std::endl;
+    std::cerr << mail.date << std::endl;
+
+    std::cerr << mail.text << std::endl;
+    
 
     return 0;
 }

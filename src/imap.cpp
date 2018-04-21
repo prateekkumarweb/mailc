@@ -31,7 +31,7 @@ bool IMAPConnection::check_response(std::string &response, std::string &id_strin
     std::string NOrgx = id_string + " [Nn][Oo]";
     std::string BADrgx = id_string + " [Bb][Aa][Dd]";
     
-    std::cerr << "response: " << response << " :response" << std::endl;
+    // std::cerr << "response: " << response << " :response" << std::endl;
 
     if (std::regex_search(response, std::regex (OKrgx) ))
         return 1;
@@ -78,10 +78,18 @@ std::tuple<int, int, int> IMAPConnection::getCount(const std::string &mailbox){
     std::string response = socket.receive();
     bool response_id = check_response(response, id_string);
     if (response_id){
-        std::smatch sm1;
-        regex_match(response, sm1, std::regex("[.\\r\\n]*([0-9]+) EXISTS[.\\r\\n]*([0-9]+)"
-            " RECENT[.\\r\\n]*\\[UNSEEN ([0-9]+)\\][.\\r\\n]*"));
-        return std::make_tuple(std::stoi(sm1[1]), std::stoi(sm1[2]), std::stoi(sm1[3]));
+        std::smatch sm;
+        int a = 0, b = 0, c = 0;
+        if (regex_search(response, sm, std::regex("([0-9]+) EXISTS"))) {
+            a = std::stoi(sm[1]);
+        }
+        if (regex_search(response, sm, std::regex("([0-9]+) EXISTS"))) {
+            b = std::stoi(sm[1]);
+        }
+        if (regex_search(response, sm, std::regex("([0-9]+) EXISTS"))) {
+            c = std::stoi(sm[1]);
+        }
+        return std::make_tuple(a, b, c);
     } else return std::make_tuple(-1,-1,-1);
 }
 
@@ -105,7 +113,7 @@ bool IMAPConnection::deleteMail(Mail mail){
     return response_id = check_response(response, id_string);
 }
 
-Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
+Mail IMAPConnection::getMail(const std::string mailbox, const int uid){
     Mail mail;
     mail.mailbox = mailbox;
     
@@ -119,7 +127,7 @@ Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
         return mail;
     }    
     
-    command = id_string + " uid fetch " + std::to_string(mail.uid) + " (BODY[HEADER.FIELDS (from to subject date)])\r\n";
+    command = id_string + " uid fetch " + std::to_string(uid) + " (BODY[HEADER.FIELDS (from to subject date)])\r\n";
     socket.send(command);
     response = socket.receive();
     response_id = check_response(response, id_string);

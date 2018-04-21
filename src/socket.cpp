@@ -112,25 +112,30 @@ Socket::~Socket() {
 }
 
 bool Socket::send(std::string &s) {
+
+	std::cerr << s << std::endl;
+
 	if (ssl == NULL) std::cerr << "IAMNULL" << std::endl;
-	int err = SSL_write (ssl, s.c_str(), s.size()+1);
+	int err = SSL_write (ssl, s.c_str(), s.size());
     CHK_SSL(err); // Graceful TODO
 }
 
-std::string Socket::receive(){
+std::string Socket::receive() {
     std::string reply = "";
-    int err;
-    char buf[1024];
+    int err = 0;
+    char buf[2048];
     
-    do{
+    do {
 	    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
 	    CHK_SSL(err); // graceful TODO
 	    buf[err] = '\0';
-	    
 	    reply += std::string(buf);
-    }while(err == sizeof(buf) - 1);
+    } while(SSL_has_pending(ssl));
+
+    std::cerr << reply << reply.size() << reply.max_size() << std::endl;
+    // exit(1);
     
-    std::cout << "Got " << std::to_string(reply.length()) << " chars:" << reply;
+    // std::cout << "Got " << std::to_string(reply.length()) << " chars:" << reply;
     
     return reply;
 }

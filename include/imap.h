@@ -33,7 +33,7 @@ public:
 
 	std::vector<Mail> getTopMails(const std::string &mailbox, int k);
 	
-	Mail getMail(const std::string &mailbox, const int uid);
+	Mail getMail(const std::string mailbox, const int uid);
 
 	bool deleteMail(Mail mail);
 
