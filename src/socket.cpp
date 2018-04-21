@@ -123,14 +123,14 @@ bool Socket::send(std::string &s) {
 std::string Socket::receive() {
     std::string reply = "";
     int err = 0;
-    char buf[2048];
+    char buf[10];
     
     do {
 	    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
 	    CHK_SSL(err); // graceful TODO
 	    buf[err] = '\0';
 	    reply += std::string(buf);
-    } while(SSL_has_pending(ssl));
+    } while(SSL_pending(ssl));
 
     std::cerr << reply << reply.size() << reply.max_size() << std::endl;
     // exit(1);
