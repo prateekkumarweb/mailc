@@ -11,7 +11,7 @@ include_directories(include)
 file(GLOB SOURCES "src/*.cpp")
 add_executable(client ${SOURCES})
 
-find_package(OpenSSL 1.1.1 REQUIRED)
+find_package(OpenSSL 1.0.2 REQUIRED)
 include_directories(${OPENSSL_INCLUDE_DIR})
 target_link_libraries(client ${OPENSSL_LIBRARIES})
 

@@ -39,7 +39,7 @@ std::tuple<bool, std::string> Socket::create(std::string hostname, int port) {
 
 std::tuple<bool, std::string> Socket::createSSL() {
 
-	OpenSSL_add_all_algorithms();
+	OpenSSL_add_ssl_algorithms();
 	SSL_load_error_strings();
 
 	const SSL_METHOD *meth = SSLv23_method();
