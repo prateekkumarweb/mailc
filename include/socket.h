@@ -22,7 +22,7 @@ class Socket {
 public:
 	std::tuple<bool, std::string> create(std::string hostname, int port);
 	std::tuple<bool, std::string> createSSL();
-	bool send(std::string &s);
+	bool send(const std::string &s);
 	std::string receive();
 	~Socket();
 private:

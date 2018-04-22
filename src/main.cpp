@@ -27,8 +27,8 @@ int main(){
     std::string s1 = "TEST5";
     std::string s2 = "INBOX";
 
-    auto [a, b, c] = imap.getCount(s2);
-    std::cerr << a << " " << b << " " << c << std::endl;
+    // auto [a, b, c] = imap.getCount(s2);
+    // std::cerr << a << " " << b << " " << c << std::endl;
 
     Mail mail = imap.getMail("INBOX", 1);
 

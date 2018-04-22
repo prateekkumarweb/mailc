@@ -13,10 +13,10 @@ std::tuple<bool, std::string> Socket::create(std::string hostname, int port) {
 	struct hostent *host;
 	struct sockaddr_in addr;
 
-	// if ((host == gethostbyname(hostname.c_str())) == NULL) {
-	// 	std::cerr << hostname << std::endl;
-	// 	return {false, "DNS failed."};
-	// }
+	if ((host = gethostbyname(hostname.c_str())) == NULL) {
+		std::cerr << hostname << std::endl;
+		return std::make_tuple(false, "DNS failed.");
+	}
 
 	sockid = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockid == -1) {
@@ -25,11 +25,10 @@ std::tuple<bool, std::string> Socket::create(std::string hostname, int port) {
 		return std::make_tuple(false, "Socket unable to create.");
 	}
 
-	memset(&addr, '\0', sizeof(addr));
+	// memset(&addr, '\0', sizeof(addr));
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
-	inet_pton(AF_INET,"204.141.32.119",&(addr.sin_addr));
-	// addr.sin_addr.s_addr = 	*(long *)(host->h_addr);
+	addr.sin_addr.s_addr = 	*(long *)(host->h_addr);
 
 	if(connect(sockid, (struct sockaddr *)&addr,sizeof(addr)) != 0) {
 		close(sockid);
@@ -42,10 +41,10 @@ std::tuple<bool, std::string> Socket::create(std::string hostname, int port) {
 
 std::tuple<bool, std::string> Socket::createSSL() {
 
-	OpenSSL_add_ssl_algorithms();
+	OpenSSL_add_all_algorithms();
 	SSL_load_error_strings();
 
-	const SSL_METHOD *meth = TLSv1_2_client_method();
+	const SSL_METHOD *meth = SSLv23_method();
 	ctx = SSL_CTX_new(meth);
 
 	if (ctx == NULL) {
@@ -64,7 +63,7 @@ std::tuple<bool, std::string> Socket::createSSL() {
     	ERR_print_errors_fp(stderr);
     	std::cerr << "Hello" << std::endl;
     } else {
-    	char *msg = "Hello???";
+    	// char *msg = "Hello???";
 
         printf("Connected with %s encryption\n", SSL_get_cipher(ssl));
         {
@@ -99,6 +98,8 @@ std::tuple<bool, std::string> Socket::createSSL() {
 	    } while(err == sizeof(buf) - 1);
 
         std::cerr << "Received: " << reply << std::endl;
+
+        SSL_set_read_ahead(ssl, 1);
     }
 
     return std::make_tuple(true, "");
@@ -111,7 +112,7 @@ Socket::~Socket() {
     SSL_free (ssl);
 }
 
-bool Socket::send(std::string &s) {
+bool Socket::send(const std::string &s) {
 
 	std::cerr << s << std::endl;
 
@@ -123,16 +124,16 @@ bool Socket::send(std::string &s) {
 std::string Socket::receive() {
     std::string reply = "";
     int err = 0;
-    char buf[10];
+    char buf[2048];
     
     do {
 	    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
 	    CHK_SSL(err); // graceful TODO
 	    buf[err] = '\0';
 	    reply += std::string(buf);
-    } while(SSL_pending(ssl));
+    } while(SSL_has_pending(ssl) || reply.size()%8192 == 0); // 8192 TODO
 
-    std::cerr << reply << reply.size() << reply.max_size() << std::endl;
+    std::cerr << reply << reply.size() << std::endl;
     // exit(1);
     
     // std::cout << "Got " << std::to_string(reply.length()) << " chars:" << reply;
