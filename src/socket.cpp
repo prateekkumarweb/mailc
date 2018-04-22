@@ -125,7 +125,7 @@ std::string Socket::receive() {
     std::string reply = "";
     int err = 0;
     char buf[2048];
-    
+
     do {
 	    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
 	    CHK_SSL(err); // graceful TODO
