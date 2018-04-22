@@ -10,7 +10,7 @@ SMTPConnection::SMTPConnection(std::string hostname, int port) {
 bool SMTPConnection::auth(std::string username, std::string password) {
 	socket.send("EHLO prateekkumar.in\r\n");
 	std::cerr << socket.receive() << std::endl;
-	socket.login("AUTH LOGIN\r\n");
+	socket.send("AUTH LOGIN\r\n");
 	std::cerr << socket.receive() << std::endl;
-	socket.send("")
+	socket.send("");
 }

@@ -18,17 +18,31 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <queue>
+#include <chrono>
+#include <regex>
+
 class Socket {
 public:
 	std::tuple<bool, std::string> create(std::string hostname, int port);
 	std::tuple<bool, std::string> createSSL();
 	bool send(const std::string &s);
 	std::string receive();
+	std::string receive(std::regex rgx);
 	~Socket();
 private:
 	int sockid;
 	SSL_CTX *ctx;
     SSL *ssl;
+    std::thread sender;
+    std::thread receiver;
+    std::mutex mtx;
+    std::queue<std::string> messages;
+    bool join = false;
+	void createThreads();
 };
 
 #endif

@@ -54,6 +54,7 @@ private:
 	Socket socket;
 	std::string username;
 	std::string password;
+	std::regex rgx;
 	bool check_response(std::string &response, std::string &id_string);
 };
 

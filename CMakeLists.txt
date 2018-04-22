@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.1)
 project (IMAP_SMTP_CLIENT)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -14,3 +14,6 @@ add_executable(client ${SOURCES})
 find_package(OpenSSL 1.1.1 REQUIRED)
 include_directories(${OPENSSL_INCLUDE_DIR})
 target_link_libraries(client ${OPENSSL_LIBRARIES})
+
+find_package(Threads REQUIRED)
+target_link_libraries(client Threads::Threads)

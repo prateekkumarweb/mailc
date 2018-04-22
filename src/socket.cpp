@@ -1,7 +1,5 @@
 #include "socket.h"
 
-#include <iostream>
-
 #define CHK_NULL(x) if ((x)==NULL) exit (1)
 #define CHK_ERR(err,s) if ((err)==-1) { perror(s); exit(1); }
 #define CHK_SSL(err) if ((err)==-1) { ERR_print_errors_fp(stderr); exit(2); }
@@ -102,41 +100,88 @@ std::tuple<bool, std::string> Socket::createSSL() {
         SSL_set_read_ahead(ssl, 1);
     }
 
+    createThreads();
+
     return std::make_tuple(true, "");
 }
 
 Socket::~Socket() {
+	join = true;
+	sender.join();
+	receiver.join();
 	SSL_shutdown (ssl);
 	close(sockid);
 	SSL_CTX_free(ctx);
     SSL_free (ssl);
 }
 
+void Socket::createThreads() {
+	using namespace std::chrono_literals;
+	receiver = std::thread([this](){
+		char buf[1024];
+		std::string reply = "";
+		while (!join) {
+			int err = SSL_read(ssl, buf, sizeof(buf)-1);
+			CHK_SSL(err);
+			buf[err] = '\0';
+			reply += std::string(buf);
+			// std::cerr << std::string(buf) << std::string(buf).size() << std::endl;
+			mtx.lock();
+			do {
+				std::size_t found = reply.find("\r\n");
+				if (found != std::string::npos) {
+					messages.push(reply.substr(0, found));
+					reply = reply.substr(found+2);
+				} else break;
+			} while(true);
+			mtx.unlock();
+			if (!SSL_pending(ssl)) {
+				std::this_thread::sleep_for(1s);
+			}
+		}
+	});
+
+	sender = std::thread([this](){
+		// while (!join) {
+		// 	std::string msg;
+		// 	int err = SSL_write (ssl, msg.c_str(), msg.size());
+  //   		CHK_SSL(err);
+		// }
+	});
+}
+
 bool Socket::send(const std::string &s) {
-
 	std::cerr << s << std::endl;
-
 	if (ssl == NULL) std::cerr << "IAMNULL" << std::endl;
 	int err = SSL_write (ssl, s.c_str(), s.size());
     CHK_SSL(err); // Graceful TODO
 }
 
 std::string Socket::receive() {
-    std::string reply = "";
-    int err = 0;
-    char buf[2048];
+	std::string msg;
+	while (true) {
+		mtx.lock();
+		if (!messages.empty()) {
+			msg = messages.front();
+			messages.pop();
+			// std::cerr << msg << msg.size() << std::endl;
+			break;
+		}
+		mtx.unlock();
+	}
+	mtx.unlock();
+	return msg + "\r\n";
+}
 
-    do {
-	    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
-	    CHK_SSL(err); // graceful TODO
-	    buf[err] = '\0';
-	    reply += std::string(buf);
-    } while(SSL_has_pending(ssl) || reply.size()%8192 == 0); // 8192 TODO
-
-    std::cerr << reply << reply.size() << std::endl;
-    // exit(1);
-    
-    // std::cout << "Got " << std::to_string(reply.length()) << " chars:" << reply;
-    
-    return reply;
+std::string Socket::receive(std::regex rgx) {
+	std::string msg = "";
+	while(true) {
+		std::string line = receive();
+		msg += line;
+		std::cerr << line.substr(0, line.size()-2) << std::endl;
+		if (regex_search(line, rgx)) {
+			break;
+		}
+	}
+	return msg;
 }
