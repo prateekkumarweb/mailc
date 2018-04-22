@@ -113,6 +113,79 @@ bool IMAPConnection::deleteMail(Mail mail){
     return response_id = check_response(response, id_string);
 }
 
+std::vector<Mail> IMAPConnection::getUnseenMails(const std::string &mailbox){
+    std::vector<Mail> mails;
+    
+    std::string id_string = "a";
+    std::string command = id_string + " select " + mailbox +"\r\n";
+    socket.send(command);
+    std::string response = socket.receive();
+    bool response_id = check_response(response, id_string);
+    if (!response_id) {
+        return mails;
+    }    
+    
+    command = id_string + " uid search unseen\r\n";
+    socket.send(command);
+    response = socket.receive();
+    response_id = check_response(response, id_string);
+    if (response_id) {
+        std::regex number("([0-9]+)");
+        std::smatch sm;
+        std::cerr << "In unseen mails, recieved: " << response;
+        std::vector<int> uids;
+        
+        while (regex_search(response, sm, number)){
+            uids.push_back(std::stoi(sm[1]));
+            response = sm.suffix();
+        }
+        
+        std::vector<int>::iterator it = uids.begin();
+        for(; it!=uids.end(); it++){
+            std::cerr << "Fetching mail uid: " << *it;
+            mails.push_back(getMail(mailbox, *it));
+        }
+    }
+    return mails;
+}
+
+std::vector<Mail> IMAPConnection::getTopMails(const std::string &mailbox, int k){
+    std::vector<Mail> mails;
+    
+    std::string id_string = "a";
+    std::string command = id_string + " select " + mailbox +"\r\n";
+    socket.send(command);
+    std::string response = socket.receive();
+    bool response_id = check_response(response, id_string);
+    if (!response_id) {
+        return mails;
+    }    
+    
+    command = id_string + " uid search all\r\n";
+    socket.send(command);
+    response = socket.receive();
+    response_id = check_response(response, id_string);
+    if (response_id) {
+        std::regex number("([0-9]+)");
+        std::smatch sm;
+        std::cerr << "In top k mails, recieved: " << response;
+        std::vector<int> uids;
+        
+        while (regex_search(response, sm, number)){
+            uids.push_back(std::stoi(sm[1]));
+            response = sm.suffix();
+        }
+        
+        if (uids.size() < k) k = uids.size();
+        std::vector<int>::iterator it = uids.end() - k;
+        for(; it!=uids.end(); it++){
+            std::cerr << "Fetching mail uid: " << *it;
+            mails.push_back(getMail(mailbox, *it));
+        }
+    }
+    return mails;
+}
+
 Mail IMAPConnection::getMail(const std::string mailbox, const int uid){
     Mail mail;
     mail.mailbox = mailbox;
@@ -133,12 +206,20 @@ Mail IMAPConnection::getMail(const std::string mailbox, const int uid){
     response_id = check_response(response, id_string);
     if (response_id){
         std::smatch sm;
-        regex_match(response, sm, std::regex("[.\\r\\n]*From: (.*)\\nDate: (.*)"
+        if (regex_search(response, sm, std::regex("From: (.*)\r\n")))
+            mail.from = sm[1];
+        if (regex_search(response, sm, std::regex("Date: (.*)\r\n")))
+            mail.date = sm[1];
+        if (regex_search(response, sm, std::regex("Subject: (.*)\r\n")))
+            mail.subject = sm[1];
+        if (regex_search(response, sm, std::regex("To: (.*)\r\n")))
+            mail.to = sm[1];
+        /*regex_match(response, sm, std::regex("[.\\r\\n]*From: (.*)\\nDate: (.*)"
             "\\nSubject: (.*)\\nTo: (.*)[.\\r\\n]*"));
-        mail.from = sm[1];
+        
         mail.date = sm[2];
         mail.subject = sm[3];
-        mail.to = sm[4];
+        mail.to = sm[4];*/
     } else {
         mail.uid = -1; 
         return mail;
@@ -151,37 +232,41 @@ Mail IMAPConnection::getMail(const std::string mailbox, const int uid){
     response = socket.receive();
     response_id = check_response(response, id_string);
     if (response_id){
+        std::cout << "Here" << std::endl;
         std::stringstream ss(response);
-        std::string s;
-        std::string sep;
-        std::string text;
-        std::string html;
+        std::string s = "";
+        std::string sep = "";
+        std::string text = "";
+        std::string html = "";
 
         int count = 1;
         int read = 0;
-        while(ss >> s){
+        while(std::getline(ss, s)){
+            if (s[s.size()-1] == '\r') s = s.substr(0, s.size()-1);
             if (count == 2){
                 sep = s;
                 sep.erase(std::remove(sep.begin(), sep.end(), '-'), sep.end());
-                ss >> s;
-                ss >> s;
+                std::getline(ss, s);
+                std::getline(ss, s);
                 read = 1;
             }
             else if (read == 1){
-                if (s.find(sep) != std::string::npos){
+                if (s.find(sep) == std::string::npos){
                     text += s + '\n';
                 } else {
                     read = 2;
-                    ss >> s;
-                    ss >> s;
+                    std::getline(ss, s);
+                    std::getline(ss, s);
                 }
             }
             else if (read == 2){
-                if (s.find(sep) != std::string::npos){
+                if (s.find(sep) == std::string::npos){
                     html += s + '\n';
                 } else break;
             }
+            count++;
         }
+        // std::cout << sep << std::endl << "TEXT: " <<    text << std::endl << html;
         mail.text = text;
         mail.html = html;
     } else{

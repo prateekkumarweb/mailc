@@ -123,7 +123,7 @@ bool Socket::send(std::string &s) {
 std::string Socket::receive() {
     std::string reply = "";
     int err = 0;
-    char buf[10];
+    char buf[1024];
     
     do {
 	    err = SSL_read (ssl, buf, sizeof(buf) - 1);                     
