@@ -23,8 +23,8 @@ struct Mail {
 
 class IMAPConnection {
 public:
-	IMAPConnection(std::string hostname, int port);
-	bool login(std::string username, std::string password); // OK, NO, BAD
+	IMAPConnection(const std::string &hostname, int port);
+	bool login(const std::string &username, const std::string &password); // OK, NO, BAD
 
 	bool noop(); // OK, BAD
 	bool logout();
@@ -33,17 +33,17 @@ public:
 
 	std::vector<Mail> getTopMails(const std::string &mailbox, int k);
 	
-	Mail getMail(const std::string mailbox, const int uid);
+	Mail getMail(const std::string &mailbox, const int uid);
 
 	bool deleteMail(Mail mail);
 
 	std::tuple<int, int, int> getCount(const std::string &mailbox);
 
-	bool createMailbox(std::string mailbox);
+	bool createMailbox(const std::string &mailbox);
 
-	bool renameMailbox(std::string &oldmailbox, std::string &newmailbox);
+	bool renameMailbox(const std::string &oldmailbox, const std::string &newmailbox);
 
-	bool deleteMailbox(std::string &mailbox);
+	bool deleteMailbox(const std::string &mailbox);
 
 	// std::vector<Mail> search(???);
 
@@ -55,7 +55,7 @@ private:
 	std::string username;
 	std::string password;
 	std::regex rgx;
-	bool check_response(std::string &response, std::string &id_string);
+	bool check_response(const std::string &response, const std::string &id_string);
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include "imap.h"
 
-IMAPConnection::IMAPConnection(std::string hostname, int port) {
+IMAPConnection::IMAPConnection(const std::string &hostname, int port) {
     rgx = std::regex("^[a-zA-Z0-9].* (OK)|(NO)|(BAD) ");
     std::tuple<bool, std::string> e = socket.create(hostname, port);
     if(!std::get<0>(e)) std::cerr << std::get<1>(e) << std::endl;
@@ -8,7 +8,7 @@ IMAPConnection::IMAPConnection(std::string hostname, int port) {
     if(!std::get<0>(e1)) std::cerr << std::get<1>(e1) << std::endl;
 }
 
-bool IMAPConnection::login(std::string username, std::string password) {
+bool IMAPConnection::login(const std::string &username, const std::string &password) {
     std::cerr << "login" << std::endl;
     std::string id_string = "a";
     std::string command = id_string + " login " + username + " " + password +"\r\n";
@@ -22,7 +22,7 @@ bool IMAPConnection::login(std::string username, std::string password) {
  * Returns 0 if BAD or NO is received
  * Returns 1 if OK received
  */
-bool IMAPConnection::check_response(std::string &response, std::string &id_string){
+bool IMAPConnection::check_response(const std::string &response, const std::string &id_string){
     
     // TODO Check if [.\r\n]*  is working
     // response.erase(std::remove(response.begin(), response.end(), '\n'), response.end());
@@ -48,7 +48,7 @@ bool IMAPConnection::check_response(std::string &response, std::string &id_strin
     std::cerr << "Program must not reach here .........................." << std::endl << std::endl;
 }
 
-bool IMAPConnection::createMailbox(std::string mailbox){
+bool IMAPConnection::createMailbox(const std::string &mailbox){
     std::string id_string = "a";
     std::string command = id_string + " create " + mailbox +"\r\n";
     socket.send(command);
@@ -56,7 +56,7 @@ bool IMAPConnection::createMailbox(std::string mailbox){
     return check_response(response, id_string);   
 }
 
-bool IMAPConnection::deleteMailbox(std::string &mailbox){
+bool IMAPConnection::deleteMailbox(const std::string &mailbox){
     std::string id_string = "a";
     std::string command = id_string + " delete " + mailbox +"\r\n";
     socket.send(command);
@@ -64,7 +64,7 @@ bool IMAPConnection::deleteMailbox(std::string &mailbox){
     return check_response(response, id_string);
 }
 
-bool IMAPConnection::renameMailbox(std::string &oldmailbox, std::string &newmailbox){
+bool IMAPConnection::renameMailbox(const std::string &oldmailbox, const std::string &newmailbox){
     std::string id_string = "a";
     std::string command = id_string + " rename " + oldmailbox + " " + newmailbox + "\r\n";
     socket.send(command);
@@ -187,7 +187,7 @@ std::vector<Mail> IMAPConnection::getTopMails(const std::string &mailbox, int k)
     return mails;
 }
 
-Mail IMAPConnection::getMail(const std::string mailbox, const int uid){
+Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
     Mail mail;
     mail.mailbox = mailbox;
     

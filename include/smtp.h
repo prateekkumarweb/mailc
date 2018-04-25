@@ -6,8 +6,10 @@
 
 class SMTPConnection {
 public:
-	SMTPConnection(std::string hostname, int port);
-	bool auth(std::string username, std::string password);
+	SMTPConnection(const std::string &hostname, int port);
+	bool auth(const std::string &username, const std::string &password);
+	bool send(const std::string &from, const std::string &to,
+		const std::string &subject, const std::string &body);
 	// ~SMTPConnection();
 private:
 	Socket socket;

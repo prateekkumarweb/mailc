@@ -1,22 +1,14 @@
 #include "imap.h"
+#include "smtp.h"
 
 int main(){
-    // Socket client("pop.zoho.com", 993);
-    // client.IMAPConnect("test@prateekkumar.in", "testtest");
-    // client.IMAPNoop();
-    // client.IMAPList("","*");
-    // client.IMAPSelect("INBOX");
-    // client.IMAPExamine("INBOX");
-    // client.IMAPCreate("TEST2");
-    // client.IMAPList("", "*");
-    // client.IMAPCreate("TEST2/CHILD");
-    // client.IMAPList("", "*");
-    // client.IMAPDelete("TEST2");
-    // client.IMAPDelete("TEST2/CHILD");
-    // client.IMAPDelete("TEST2");
-    // client.IMAPList("", "*");
-    // //client.IMAPStatus("INBOX", "MESSAGES");
-    // client.IMAPlogout();
+
+    SMTPConnection smtp("smtp.zoho.com", 465);
+    smtp.auth("test@prateekkumar.in", "testtest");
+    smtp.send("test@prateekkumar.in", "prateek@prateekkumar.in",
+        "Hello", "PK");
+
+    return 0;
 
     std::string hostname = "imap.zoho.com";
 

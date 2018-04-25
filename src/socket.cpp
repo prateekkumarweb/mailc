@@ -151,7 +151,7 @@ void Socket::createThreads() {
 }
 
 bool Socket::send(const std::string &s) {
-	std::cerr << s << std::endl;
+	// std::cerr << s << std::endl;
 	if (ssl == NULL) std::cerr << "IAMNULL" << std::endl;
 	int err = SSL_write (ssl, s.c_str(), s.size());
     CHK_SSL(err); // Graceful TODO
