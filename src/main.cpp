@@ -3,12 +3,12 @@
 
 int main(){
 
-    SMTPConnection smtp("smtp.zoho.com", 465);
+    /*SMTPConnection smtp("smtp.zoho.com", 465);
     smtp.auth("test@prateekkumar.in", "testtest");
     smtp.send("test@prateekkumar.in", "prateek@prateekkumar.in",
         "Hello", "PK");
 
-    return 0;
+    return 0;*/
 
     std::string hostname = "imap.zoho.com";
 
@@ -30,7 +30,7 @@ int main(){
     std::cerr << mail.date << std::endl;
 
     std::cerr << mail.text << std::endl;
-    std::cerr << mail.html << std::endl;*/
+    std::cerr << mail.html << std::endl;
     
     std::vector<Mail> mails = imap.getUnseenMails("INBOX");
     for (int i=0; i<mails.size(); i++){
@@ -41,6 +41,11 @@ int main(){
         
         std::cerr << mails[i].text << std::endl;
         std::cerr << mails[i].html << std::endl;
+    }*/
+    
+    std::vector<int> uids = imap.search("INBOX", "", "", "", "", "", "20-Apr-2018", "26-Apr-2018");
+    for (int i=0; i<uids.size(); i++){
+        std::cerr << uids[i] << std::endl;
     }
     
 

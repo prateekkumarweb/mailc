@@ -33,6 +33,10 @@ public:
 
 	std::vector<Mail> getTopMails(const std::string &mailbox, int k);
 	
+	std::vector<int> search(const std::string &mailbox, const std::string &from = "",
+                const std::string &to = "", const std::string &subject = "", const std::string &text = "" ,
+                const std::string &nottext = "", const std::string &since = "", const std::string &before = "");
+
 	Mail getMail(const std::string &mailbox, const int uid);
 
 	bool deleteMail(Mail mail);

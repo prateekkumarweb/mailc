@@ -114,6 +114,56 @@ bool IMAPConnection::deleteMail(Mail mail){
     return response_id = check_response(response, id_string);
 }
 
+std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::string &from,
+                const std::string &to, const std::string &subject, const std::string &text,
+                const std::string &nottext, const std::string &since, const std::string &before){
+    std::vector<int> uids;
+
+    std::string id_string = "a";
+    std::string command = id_string + " select " + mailbox +"\r\n";
+    socket.send(command);
+    std::string response = socket.receive(rgx);
+    bool response_id = check_response(response, id_string);
+    if (!response_id) {
+        return uids;
+    }
+
+    command = id_string + " search";
+    if (from != "")
+        command += " from " + from;
+    if (to != "")
+        command += " to " + to;
+    if (subject != "")
+        command += " subject " + subject;
+    if (text != "")
+        command += " text " + text;
+    if (since != "")
+        command += " since " + since;
+    if (before != "")
+        command += " since " + since;
+    if (nottext != "")
+        command += " not text " + nottext;
+
+    command += "\r\n";
+    socket.send(command);
+    response = socket.receive(rgx);
+    response_id = check_response(response, id_string);
+    if (response_id) {
+        return uids;
+    }
+
+    std::regex number("([0-9]+)");
+    std::smatch sm;
+    std::cerr << "In search mails, recieved: " << response;
+
+    while (regex_search(response, sm, number)){
+        uids.push_back(std::stoi(sm[1]));
+        response = sm.suffix();
+    }
+
+    return uids;
+}
+
 std::vector<Mail> IMAPConnection::getUnseenMails(const std::string &mailbox){
     std::vector<Mail> mails;
     
