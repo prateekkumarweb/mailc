@@ -84,10 +84,10 @@ std::tuple<int, int, int> IMAPConnection::getCount(const std::string &mailbox){
         if (regex_search(response, sm, std::regex("([0-9]+) EXISTS"))) {
             a = std::stoi(sm[1]);
         }
-        if (regex_search(response, sm, std::regex("([0-9]+) EXISTS"))) {
+        if (regex_search(response, sm, std::regex("([0-9]+) RECENT"))) {
             b = std::stoi(sm[1]);
         }
-        if (regex_search(response, sm, std::regex("([0-9]+) EXISTS"))) {
+        if (regex_search(response, sm, std::regex("UNSEEN ([0-9]+)"))) {
             c = std::stoi(sm[1]);
         }
         return std::make_tuple(a, b, c);
@@ -196,6 +196,16 @@ std::vector<Mail> IMAPConnection::getUnseenMails(const std::string &mailbox){
             std::cerr << "Fetching mail uid: " << *it;
             mails.push_back(getMail(mailbox, *it));
         }
+        
+        // Fetching mails from servers makes them seen
+        // To restore the original position, we remove the flag Seen from these mails
+        it = uids.begin();
+        for(; it!=uids.end(); it++){
+            command = id_string + " uid store " + *it +" -flags (\Seen) \r\n";
+            socket.send(command);
+            std::string response = socket.receive(rgx);
+            response_id = check_response(response, id_string);
+        }
     }
     return mails;
 }
@@ -204,17 +214,14 @@ std::vector<Mail> IMAPConnection::getTopMails(const std::string &mailbox, int k)
     std::vector<Mail> mails;
     
     std::string id_string = "a";
-    std::string command = id_string + " select " + mailbox +"\r\n";
-    socket.send(command);
-    std::string response = socket.receive(rgx);
-    bool response_id = check_response(response, id_string);
+    bool response_id = select(mailbox);
     if (!response_id) {
         return mails;
     }    
     
-    command = id_string + " uid search all\r\n";
+    std::string command = id_string + " uid search all\r\n";
     socket.send(command);
-    response = socket.receive(rgx);
+    std::string response = socket.receive(rgx);
     response_id = check_response(response, id_string);
     if (response_id) {
         std::regex number("([0-9]+)");
@@ -237,23 +244,76 @@ std::vector<Mail> IMAPConnection::getTopMails(const std::string &mailbox, int k)
     return mails;
 }
 
+std::vector<std::string> IMAPConnection::getmailboxes(){
+    std::vector<std::string> mailboxes;
+    
+    std::string id_string = "a";
+    std::string command = id_string + " list "" *\r\n";
+    socket.send(command);
+    std::string response = socket.receive(rgx);
+    bool response_id = check_response(response, id_string);
+    if (response_id) {
+        std::regex name("\"/\" \"(.*)\"\r\n");
+        std::smatch sm;
+        
+        while (regex_search(response, sm, name)){
+            mailboxes.push_back(sm[1]);
+            response = sm.suffix();
+            std::cerr << "Detected mailbox:  " << sm[1] << std::endl;
+        }
+    }
+    
+    return mailboxes;
+}
+
+bool IMAPConnection::select(const std:string &mailbox){
+    std::string id_string = "a";
+    std::string command = id_string + " select " + mailbox +"\r\n";
+    socket.send(command);
+    std::string response = socket.receive(rgx);
+    return response_id = check_response(response, id_string);
+}
+
+std::vector<int> IMAPConnection::getAllmails(const std:string &mailbox){
+    std::vector<int> uids;
+    
+    std::string id_string = "a";
+    bool response_id = select(mailbox);
+    if (response_id){
+        std::string command = id_string + " uid search all\r\n";
+        socket.send(command);
+        std::string response = socket.receive(rgx);
+        response_id = check_response(response, id_string);
+        if (response_id) {
+            std::regex number("([0-9]+)");
+            std::smatch sm;
+            std::cerr << "In get all mails, recieved: " << response;
+            std::vector<int> uids;
+            
+            while (regex_search(response, sm, number)){
+                uids.push_back(std::stoi(sm[1]));
+                response = sm.suffix();
+            }
+        }
+    }
+    
+    return uids;
+}
+
 Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
     Mail mail;
     mail.mailbox = mailbox;
     
     std::string id_string = "a";
-    std::string command = id_string + " select " + mail.mailbox +"\r\n";
-    socket.send(command);
-    std::string response = socket.receive(rgx);
-    bool response_id = check_response(response, id_string);
+    bool response_id = select(mailbox);
     if (!response_id) {
         mail.uid = -1; 
         return mail;
     }    
     
-    command = id_string + " uid fetch " + std::to_string(uid) + " (BODY[HEADER.FIELDS (from to subject date)])\r\n";
+    std::string command = id_string + " uid fetch " + std::to_string(uid) + " (BODY[HEADER.FIELDS (from to subject date)])\r\n";
     socket.send(command);
-    response = socket.receive(rgx);
+    std::string response = socket.receive(rgx);
     response_id = check_response(response, id_string);
     if (response_id){
         std::smatch sm;

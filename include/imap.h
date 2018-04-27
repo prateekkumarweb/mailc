@@ -48,6 +48,12 @@ public:
 	bool renameMailbox(const std::string &oldmailbox, const std::string &newmailbox);
 
 	bool deleteMailbox(const std::string &mailbox);
+	
+	std::vector<std::string> getmailboxes();
+	
+	bool select(const std:string &mailbox);
+	
+	std::vector<int> getAllmails(const std:string &mailbox);
 
 	// std::vector<Mail> search(???);
 
