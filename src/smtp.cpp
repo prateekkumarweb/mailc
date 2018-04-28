@@ -46,13 +46,13 @@ bool SMTPConnection::auth(const std::string &username, const std::string &passwo
 bool SMTPConnection::send(const std::string &from, const std::string &to,
 	const std::string &subject, const std::string &body) {
 	std::string out;
-	socket.send("MAIL FROM:<"+from+">\r\n");
+	socket.send("MAIL FROM: "+from+"\r\n");
 	out = socket.receive();
 	if (!std::regex_search(out, std::regex("^250 "))) {
 		std::cerr << out << std::endl;
 		return false;
 	}
-	socket.send("RCPT TO:<"+to+">\r\n");
+	socket.send("RCPT TO: "+to+"\r\n");
 	out = socket.receive();
 	if (!std::regex_search(out, std::regex("^250 "))) {
 		std::cerr << out << std::endl;
@@ -64,10 +64,14 @@ bool SMTPConnection::send(const std::string &from, const std::string &to,
 		std::cerr << out << std::endl;
 		return false;
 	}
+	std::string body2 = body;
+	if (body.size() < 5 || body.substr(body.size()-5, 5) != "\r\n.\r\n") {
+		body2 += "\r\n.\r\n";
+	}
 	socket.send("From: "+from+"\r\n"
 				"To: "+to+"\r\n"
 				"Subject: "+subject+"\r\n\r\n"
-				+body);
+				+body2);
 	out = socket.receive();
 	if (!std::regex_search(out, std::regex("^250 "))) {
 		std::cerr << out << std::endl;

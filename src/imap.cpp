@@ -1,7 +1,8 @@
 #include "imap.h"
 
 IMAPConnection::IMAPConnection(const std::string &hostname, int port) {
-    rgx = std::regex("^[a-zA-Z0-9].* (OK)|(NO)|(BAD) ");
+    id_string = "imapmailcPVclientpv";
+    rgx = std::regex("imapmailcPVclientpv ((OK)|(NO)|(BAD)) .*");
     std::tuple<bool, std::string> e = socket.create(hostname, port);
     if(!std::get<0>(e)) std::cerr << std::get<1>(e) << std::endl;
     std::tuple<bool, std::string> e1 = socket.createSSL();
@@ -10,7 +11,6 @@ IMAPConnection::IMAPConnection(const std::string &hostname, int port) {
 
 bool IMAPConnection::login(const std::string &username, const std::string &password) {
     std::cerr << "login" << std::endl;
-    std::string id_string = "a";
     std::string command = id_string + " login " + username + " " + password +"\r\n";
     socket.send(command);
     std::string response = socket.receive(rgx);
@@ -34,13 +34,13 @@ bool IMAPConnection::check_response(const std::string &response, const std::stri
     
     // std::cerr << "response: " << response << " :response" << std::endl;
 
-    if (std::regex_search(response, std::regex (OKrgx) ))
+    if (regex_search(response, std::regex (OKrgx) ))
         return 1;
             
-    if (std::regex_search(response, std::regex(NOrgx) ))
+    if (regex_search(response, std::regex(NOrgx) ))
         return 0;
     
-    if (std::regex_search(response, std::regex(BADrgx) )){
+    if (regex_search(response, std::regex(BADrgx) )){
         std::cerr << "[ERROR] BAD command: " << response;
         return 0;
     }
@@ -48,24 +48,21 @@ bool IMAPConnection::check_response(const std::string &response, const std::stri
     std::cerr << "Program must not reach here .........................." << std::endl << std::endl;
 }
 
-bool IMAPConnection::createMailbox(const std::string &mailbox){
-    std::string id_string = "a";
+bool IMAPConnection::createMailbox(const std::string &mailbox) {
     std::string command = id_string + " create " + mailbox +"\r\n";
     socket.send(command);
     std::string response = socket.receive(rgx);
     return check_response(response, id_string);   
 }
 
-bool IMAPConnection::deleteMailbox(const std::string &mailbox){
-    std::string id_string = "a";
+bool IMAPConnection::deleteMailbox(const std::string &mailbox) {
     std::string command = id_string + " delete " + mailbox +"\r\n";
     socket.send(command);
     std::string response = socket.receive(rgx);
     return check_response(response, id_string);
 }
 
-bool IMAPConnection::renameMailbox(const std::string &oldmailbox, const std::string &newmailbox){
-    std::string id_string = "a";
+bool IMAPConnection::renameMailbox(const std::string &oldmailbox, const std::string &newmailbox) {
     std::string command = id_string + " rename " + oldmailbox + " " + newmailbox + "\r\n";
     socket.send(command);
     std::string response = socket.receive(rgx);
@@ -79,8 +76,7 @@ bool IMAPConnection::noop(){
     return check_response(response, "a");
 }
 
-std::tuple<int, int, int> IMAPConnection::getCount(const std::string &mailbox){
-    std::string id_string = "a";
+std::tuple<int, int, int> IMAPConnection::getCount(const std::string &mailbox) {
     std::string command = id_string + " examine " + mailbox +"\r\n";
     socket.send(command);
     std::string response = socket.receive(rgx);
@@ -101,8 +97,7 @@ std::tuple<int, int, int> IMAPConnection::getCount(const std::string &mailbox){
     } else return std::make_tuple(-1,-1,-1);
 }
 
-bool IMAPConnection::deleteMail(Mail mail){
-    std::string id_string = "a";
+bool IMAPConnection::deleteMail(Mail mail) {
     std::string command = id_string + " select " + mail.mailbox +"\r\n";
     socket.send(command);
     std::string response = socket.receive(rgx);
@@ -126,7 +121,6 @@ std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::s
                 const std::string &nottext, const std::string &since, const std::string &before){
     std::vector<int> uids;
 
-    std::string id_string = "a";
     std::string command = id_string + " select " + mailbox +"\r\n";
     socket.send(command);
     std::string response = socket.receive(rgx);
@@ -135,7 +129,7 @@ std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::s
         return uids;
     }
 
-    command = id_string + " search";
+    command = id_string + " uid search";
     if (from != "")
         command += " from \"" + from + "\"";
     if (to != "")
@@ -173,8 +167,7 @@ std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::s
 
 std::vector<Mail> IMAPConnection::getUnseenMails(const std::string &mailbox){
     std::vector<Mail> mails;
-    
-    std::string id_string = "a";
+
     std::string command = id_string + " select " + mailbox +"\r\n";
     socket.send(command);
     std::string response = socket.receive(rgx);
@@ -219,8 +212,7 @@ std::vector<Mail> IMAPConnection::getUnseenMails(const std::string &mailbox){
 
 std::vector<Mail> IMAPConnection::getTopMails(const std::string &mailbox, int k){
     std::vector<Mail> mails;
-    
-    std::string id_string = "a";
+
     bool response_id = select(mailbox);
     if (!response_id) {
         return mails;
@@ -253,9 +245,8 @@ std::vector<Mail> IMAPConnection::getTopMails(const std::string &mailbox, int k)
 
 std::vector<std::string> IMAPConnection::getmailboxes(){
     std::vector<std::string> mailboxes;
-    
-    std::string id_string = "a";
-    std::string command = id_string + " list "" *\r\n";
+
+    std::string command = id_string + " list \"\" *\r\n";
     socket.send(command);
     std::string response = socket.receive(rgx);
     bool response_id = check_response(response, id_string);
@@ -273,8 +264,7 @@ std::vector<std::string> IMAPConnection::getmailboxes(){
     return mailboxes;
 }
 
-bool IMAPConnection::select(const std::string &mailbox){
-    std::string id_string = "a";
+bool IMAPConnection::select(const std::string &mailbox) {
     std::string command = id_string + " select " + mailbox +"\r\n";
     socket.send(command);
     std::string response = socket.receive(rgx);
@@ -283,8 +273,7 @@ bool IMAPConnection::select(const std::string &mailbox){
 
 std::vector<int> IMAPConnection::getAllmails(const std::string &mailbox){
     std::vector<int> uids;
-    
-    std::string id_string = "a";
+
     bool response_id = select(mailbox);
     if (response_id){
         std::string command = id_string + " uid search all\r\n";
@@ -294,12 +283,16 @@ std::vector<int> IMAPConnection::getAllmails(const std::string &mailbox){
         if (response_id) {
             std::regex number("([0-9]+)");
             std::smatch sm;
-            std::cerr << "In get all mails, recieved: " << response;
-            std::vector<int> uids;
-            
-            while (regex_search(response, sm, number)){
-                uids.push_back(std::stoi(sm[1]));
-                response = sm.suffix();
+            response.erase(std::remove(response.begin(), response.end(), '\r'), response.end());
+            std::replace(response.begin(), response.end(), '\n', ' ');
+            std::stringstream res(response);
+
+            while (!res.eof()) {
+                std::string id_str;
+                res >> id_str;
+                if (std::regex_match(id_str, number)) {
+                    uids.push_back(std::stoi(id_str));
+                }
             }
         }
     }
@@ -310,8 +303,7 @@ std::vector<int> IMAPConnection::getAllmails(const std::string &mailbox){
 Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
     Mail mail;
     mail.mailbox = mailbox;
-    
-    std::string id_string = "a";
+
     bool response_id = select(mailbox);
     if (!response_id) {
         mail.uid = -1; 
@@ -349,8 +341,9 @@ Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
     socket.send(command);
     response = socket.receive(rgx);
     response_id = check_response(response, id_string);
-    if (response_id){
-        std::cout << "Here" << std::endl;
+    if (response_id) {
+        std::cerr << "Here" << std::endl;
+        response.erase(std::remove(response.begin(), response.end(), '\r'), response.end());
         std::stringstream ss(response);
         std::string s = "";
         std::string sep = "";
@@ -359,10 +352,13 @@ Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
 
         int count = 1;
         int read = 0;
+        std::cerr << response << std::endl;
         while(std::getline(ss, s)){
-            if (s[s.size()-1] == '\r') s = s.substr(0, s.size()-1);
+            // if (s[s.size()-1] == '\r') s = s.substr(0, s.size()-1);
+            if (s == "" && read == 0) continue;
             if (count == 2){
                 sep = s;
+                std::cerr << "SEP:" << sep << std::endl; 
                 sep.erase(std::remove(sep.begin(), sep.end(), '-'), sep.end());
                 std::getline(ss, s);
                 std::getline(ss, s);
@@ -384,7 +380,7 @@ Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
             }
             count++;
         }
-        // std::cout << sep << std::endl << "TEXT: " <<    text << std::endl << html;
+        std::cout << sep << std::endl << "TEXT: " <<    text << std::endl << html;
         mail.text = text;
         mail.html = html;
     } else{
@@ -395,7 +391,7 @@ Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
     return mail;
 }
 
-std::vector<Mail> getMails(const std::string &mailbox, std::vector<int> uids){
+std::vector<Mail> IMAPConnection::getMails(const std::string &mailbox, std::vector<int> uids){
     std::vector<Mail> mails;
 
     for(auto it = uids.begin(); it != uids.end(); it++){

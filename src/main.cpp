@@ -1,14 +1,6 @@
 #include "imap.h"
 #include "smtp.h"
-
-struct config {
-    std::string imap_server;
-    int imap_port;
-    std::string smtp_server;
-    int smtp_port;
-    std::string username;
-    std::string password;
-};
+#include "cliutils.h"
 
 int main(){
 
@@ -33,7 +25,10 @@ int main(){
     //     // populate config
     // }
 
-    // IMAPConnection imap(config.imap_server, config.imap_port);
+    IMAPConnection imap(config.imap_server, config.imap_port);
+    if (imap.login(config.username, config.password)) {
+        std::cout << "Login successful" << std::endl;
+    }
     // SMTPConnection smtp(config.smtp_server, config.smtp_port);
 
     std::string cmd;
@@ -72,10 +67,12 @@ int main(){
             }
         }
         else if (cmd == "sync") {
-            std::cout << ":)" << std::endl;
+            cliutils::sync(imap);
         }
         std::cout << "client> ";
     }
+
+    std::cout << std::endl;
 
     return 0;
 }

@@ -1,5 +1,14 @@
 #include "cliutils.h"
 
+#include <cstdlib>
+#include <algorithm>
+
+std::string MAIL_PATH() {
+    std::string HOME_DIR(std::getenv("HOME"));
+    return HOME_DIR+"/.mailc/";
+}
+
+
 void GetReqDirs(const std::string& path, std::vector<std::string>& dirs){
     DIR *dpdf;
     struct dirent *epdf;
@@ -7,7 +16,7 @@ void GetReqDirs(const std::string& path, std::vector<std::string>& dirs){
     if (dpdf != NULL){
         while ((epdf = readdir(dpdf)) != NULL){
             if(epdf->d_type==DT_DIR && strstr(epdf->d_name,"..") == NULL && strstr(epdf->d_name,".") == NULL){
-                dirs.push_back((path+epdf->d_name).substr(2));
+                dirs.push_back((path+epdf->d_name).substr(MAIL_PATH().size()));
                 GetReqDirs(path+epdf->d_name+"/", dirs);               
             }            
         }
@@ -15,27 +24,51 @@ void GetReqDirs(const std::string& path, std::vector<std::string>& dirs){
     closedir(dpdf);
 }
 
-bool sync(IMAPConnection imap){
+template<class T>
+void print_vectors(std::vector<T> v, char sep = ' ') {
+    for (auto &t: v) {
+        std::cout << t << sep;
+    }
+    std::cout << std::endl;
+}
+
+std::string tolowercase(const std::string &s) {
+    std::string l = s;
+    std::transform(l.begin(), l.end(), l.begin(), ::tolower);
+    return l;
+}
+
+bool cliutils::sync(IMAPConnection &imap){
+
+    if (!fs::is_directory(fs::path(MAIL_PATH()))) {
+        fs::create_directory(fs::path(MAIL_PATH()));
+    }
     
     // List the folders and check if present
     std::vector<std::string> offline_mailboxes;
-    GetReqDirs("./", offline_mailboxes);
+    GetReqDirs(MAIL_PATH(), offline_mailboxes);
+    std::transform(offline_mailboxes.begin(), offline_mailboxes.end(), offline_mailboxes.begin(), tolowercase);
+
+    // print_vectors(offline_mailboxes, '\n');
         
     std::vector<std::string> mailboxes = imap.getmailboxes();
+    std::transform(mailboxes.begin(), mailboxes.end(), mailboxes.begin(), tolowercase);
+
+    print_vectors(mailboxes);
     
     
     for (auto it = mailboxes.begin(); it != mailboxes.end(); it++){
-        if (std::find(offline_mailboxes.begin(), offline_mailboxes.end(), *it) != offline_mailboxes.end()){
+        if (std::find(offline_mailboxes.begin(), offline_mailboxes.end(), *it) == offline_mailboxes.end()){
             //Create the mailbox (*it)
-            fs::create_directory(*it);
+            std::string p = MAIL_PATH()+tolowercase(*it);
+            fs::create_directory(p);
         }
     }
     
-    
     for(auto it = offline_mailboxes.begin(); it != offline_mailboxes.end(); it++){
-        if (std::find(mailboxes.begin(), mailboxes.end(), *it) != mailboxes.end()){
+        if (std::find(mailboxes.begin(), mailboxes.end(), tolowercase(*it)) == mailboxes.end()){
             //Delete the mailbox (*it)
-            fs::remove(*it);
+            fs::remove(MAIL_PATH()+tolowercase(*it));
         }
     }
     // Within each folder sync mails
@@ -51,7 +84,7 @@ bool sync(IMAPConnection imap){
         
         imap.select(mailbox);
                 
-        std::string mailbox_path = "./" + mailbox;
+        std::string mailbox_path = MAIL_PATH() + mailbox;
         std::vector<int> offline_uids;
         for (auto & p : fs::directory_iterator(mailbox_path)){
             if(!is_directory(p)){
@@ -66,16 +99,20 @@ bool sync(IMAPConnection imap){
         
         //Delete the extra mails
         for(auto it2 = offline_uids.begin(); it2 != offline_uids.end(); it2++){
-            if (std::find(uids.begin(), uids.end(), *it2) != uids.end()){
+            if (std::find(uids.begin(), uids.end(), *it2) == uids.end()){
                 //Delete the mail
-                std::string mailpath = "./" + mailbox + "/" + std::to_string(*it2) + ".m";
+                std::string mailpath = MAIL_PATH() + mailbox + "/" + std::to_string(*it2) + ".m";
                 fs::remove(mailpath);
             }
         }
         
+        print_vectors(uids);
+        print_vectors(offline_uids);
+
         for(auto it2 = uids.begin(); it2 != uids.end(); it2++){
-            if (std::find(offline_uids.begin(), offline_uids.end(), *it2) != offline_uids.end()){
-                std::string mailpath = "./" + mailbox + "/" + std::to_string(*it2) + ".m";
+            if (std::find(offline_uids.begin(), offline_uids.end(), *it2) == offline_uids.end()){
+                std::string mailpath = MAIL_PATH() + mailbox + "/" + std::to_string(*it2) + ".m";
+                std::cout << mailpath << std::endl;
                 std::ofstream outfile (mailpath);
                 
                 Mail mail = imap.getMail(mailbox, *it2);
@@ -101,7 +138,7 @@ bool sync(IMAPConnection imap){
 }
 
 std::vector<std::string> readMail(const std::string& mailbox, int uid){
-    std::string path = "./" + mailbox + "/" + std::to_string(uid) + ".m";
+    std::string path = MAIL_PATH() + mailbox + "/" + std::to_string(uid) + ".m";
     std::ifstream mailfile(path);
     std::string line;
     std::vector<std::string> contents;
@@ -124,12 +161,7 @@ std::vector<std::string> readMail(const std::string& mailbox, int uid){
     return contents;    
 }
 
-bool send(const std::string &from, const std::string &to,
-	const std::string &subject, const std::string &body){
-	    
-}
-
-std::vector<int> searchmails(const std::string &mailbox, const std::string &from,
+std::vector<int> searchmails(IMAPConnection &imap, const std::string &mailbox, const std::string &from,
                 const std::string &to, const std::string &subject, const std::string &text,
                 const std::string &nottext, const std::string &since, const std::string &before){
 
@@ -137,7 +169,7 @@ std::vector<int> searchmails(const std::string &mailbox, const std::string &from
         std::string segment;
         std::vector<std::string> sincelist;
 
-        while(std::getline(from, segment, '-')){
+        while(std::getline(std::stringstream(since), segment, '-')){
             sincelist.push_back(segment);
         }
 
@@ -150,7 +182,7 @@ std::vector<int> searchmails(const std::string &mailbox, const std::string &from
         std::string segment;
         std::vector<std::string> beforelist;
 
-        while(std::getline(from, segment, '-')){
+        while(std::getline(std::stringstream(before), segment, '-')){
             beforelist.push_back(segment);
         }
 
@@ -162,23 +194,31 @@ std::vector<int> searchmails(const std::string &mailbox, const std::string &from
     return imap.search(mailbox, from, to, subject, text, nottext, since, before);
 }
 
-bool createMailbox(const std::string &mailbox){
+bool createMailbox(IMAPConnection &imap, const std::string &mailbox){
     bool response = imap.createMailbox(mailbox);
     if (response)
         sync();
     return response;
 }
 
-bool deleteMailbox(const std::string &mailbox){
+bool deleteMailbox(IMAPConnection &imap, const std::string &mailbox){
     bool response = imap.deleteMailbox(mailbox);
     if (response)
         sync();
     return response;
 }
 
-bool renameMailbox(const std::string &oldmailbox, const std::string &newmailbox){
+bool renameMailbox(IMAPConnection &imap, const std::string &oldmailbox, const std::string &newmailbox){
     bool response = imap.renameMailbox(oldmailbox, newmailbox);
     if (response)
         sync();
     return response;
+}
+
+bool sendMail(config &config, const std::string &from, const std::string &to, const std::string &subject, const std::string &msg) {
+    SMTPConnection smtp(config.smtp_server, config.smtp_port);
+    smtp.auth(config.username, config.password);
+    std::string body = "";
+
+    // TODO send
 }

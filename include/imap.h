@@ -43,8 +43,6 @@ public:
 
 	bool deleteMail(Mail mail);
 
-	bool noop();
-
 	std::tuple<int, int, int> getCount(const std::string &mailbox);
 
 	bool createMailbox(const std::string &mailbox);
@@ -69,6 +67,7 @@ private:
 	std::string username;
 	std::string password;
 	std::regex rgx;
+	std::string id_string;
 	bool check_response(const std::string &response, const std::string &id_string);
 };
 

@@ -178,8 +178,10 @@ std::string Socket::receive(std::regex rgx) {
 	while(true) {
 		std::string line = receive();
 		msg += line;
-		std::cerr << line.substr(0, line.size()-2) << std::endl;
-		if (regex_search(line, rgx)) {
+		line = line.substr(0, line.size()-2);
+		std::cerr << "LINE: " << line << std::endl;
+		if (std::regex_match(line, rgx)) {
+			std::cerr << "Regex Match: " << line << std::endl;
 			break;
 		}
 	}
