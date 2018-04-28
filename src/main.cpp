@@ -19,15 +19,58 @@ int main(){
 
     while (std::getline(std::cin, cmd)) {
         if (cmd == "help") {
+            std::cout << "help\t\tDisplay this list" << std::endl;
             std::cout << "send\t\tSend an email" << std::endl;
             std::cout << "quit\t\tQuit the program" << std::endl;
             std::cout << "read\t\tRead mail from a mailbox" << std::endl;
             std::cout << "search\t\tSearch for mails" << std::endl;
             std::cout << "delete\t\tDelete mail from a mailbox" << std::endl;
             std::cout << "sync\t\tSync the folders and mails" << std::endl;
+            std::cout << "list\t\tList mailboxes" << std::endl;
+            std::cout << "create\t\tCreate a new mailbox" << std::endl;
+            std::cout << "deletemb\tDelete an existing mailbox" << std::endl;
+            std::cout << "rename\t\tRename a mailbox" << std::endl;
         }
         else if (cmd == "quit") {
             break;
+        }
+        else if (cmd == "list") {
+            auto mailboxes = cliutils::getMailboxes();
+            for (const auto &mailbox : mailboxes) {
+                std::cout << mailbox << std::endl;
+            }
+        }
+        else if (cmd == "create") {
+            std::string mailbox;
+            std::cout << "mailbox> ";
+            std::getline(std::cin, mailbox);
+            if (cliutils::createMailbox(imap, mailbox)) {
+                std::cout << "Created mailbox" << std::endl;
+            } else {
+                std::cout << "Mailbox could not be created" << std::endl;
+            }
+        }
+        else if (cmd == "deletemb") {
+            std::string mailbox;
+            std::cout << "mailbox> ";
+            std::getline(std::cin, mailbox);
+            if (cliutils::deleteMailbox(imap, mailbox)) {
+                std::cout << "Deleted mailbox" << std::endl;
+            } else {
+                std::cout << "Mailbox could not be deleted" << std::endl;
+            }
+        }
+        else if (cmd == "rename") {
+            std::string old_mailbox, new_mailbox;
+            std::cout << "old_mailbox> ";
+            std::getline(std::cin, old_mailbox);
+            std::cout << "new_mailbox> ";
+            std::getline(std::cin, new_mailbox);
+            if (cliutils::renameMailbox(imap, old_mailbox, new_mailbox)) {
+                std::cout << "Renamed mailbox" << std::endl;
+            } else {
+                std::cout << "Mailbox could not be renamed" << std::endl;
+            }
         }
         else if (cmd == "search") {
             std::string mailbox, from, to, subject, text, nottext, since, before;

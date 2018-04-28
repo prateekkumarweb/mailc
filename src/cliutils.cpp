@@ -267,3 +267,10 @@ std::vector<Mail> cliutils::getMails(IMAPConnection &imap, const std::string &ma
 
     return mails;
 }
+
+std::vector<std::string> cliutils::getMailboxes() {
+    std::vector<std::string> mailboxes;
+    GetReqDirs(MAIL_PATH(), mailboxes);
+    std::transform(mailboxes.begin(), mailboxes.end(), mailboxes.begin(), tolowercase);
+    return mailboxes;
+}
