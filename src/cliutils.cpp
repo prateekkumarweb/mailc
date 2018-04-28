@@ -27,9 +27,9 @@ void GetReqDirs(const std::string& path, std::vector<std::string>& dirs) {
 // template<class T>
 // void print_vectors(std::vector<T> v, char sep = ' ') {
 //     for (auto &t: v) {
-//         std::cout << t << sep;
+//         std::cerr << t << sep;
 //     }
-//     std::cout << std::endl;
+//     std::cerr << std::endl;
 // }
 
 std::string tolowercase(const std::string &s) {
@@ -112,7 +112,7 @@ bool cliutils::sync(IMAPConnection &imap){
         for(auto it2 = uids.begin(); it2 != uids.end(); it2++){
             if (std::find(offline_uids.begin(), offline_uids.end(), *it2) == offline_uids.end()){
                 std::string mailpath = MAIL_PATH() + mailbox + "/" + std::to_string(*it2) + ".m";
-                std::cout << mailpath << std::endl;
+                // std::cerr << mailpath << std::endl;
                 std::ofstream outfile (mailpath);
                 
                 Mail mail = imap.getMail(mailbox, *it2);
@@ -251,6 +251,7 @@ bool cliutils::sendMail(config &config, const std::string &to, const std::string
         +msg+"\r\n\r\n.\r\n";
 
     if (smtp.send(from_, to_, subject, body)) {
+        // std::cerr << "Sent" << std::endl;
         ::sync();
         return true;
     } else {

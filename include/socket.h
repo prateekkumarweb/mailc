@@ -4,6 +4,7 @@
 #include <tuple>
 #include <string>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include <sys/socket.h>
 #include <sys/types.h>

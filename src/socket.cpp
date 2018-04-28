@@ -1,7 +1,5 @@
 #include "socket.h"
 
-#define CHK_NULL(x) if ((x)==NULL) exit (1)
-#define CHK_ERR(err,s) if ((err)==-1) { perror(s); exit(1); }
 #define CHK_SSL(err) if ((err)==-1) { ERR_print_errors_fp(stderr); exit(2); }
 
 std::tuple<bool, std::string> Socket::create(std::string hostname, int port) {
@@ -12,14 +10,12 @@ std::tuple<bool, std::string> Socket::create(std::string hostname, int port) {
 	struct sockaddr_in addr;
 
 	if ((host = gethostbyname(hostname.c_str())) == NULL) {
-		std::cerr << hostname << std::endl;
 		return std::make_tuple(false, "DNS failed.");
 	}
 
 	sockid = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockid == -1) {
 		// TODO Handle this error gracefully
-		std::cerr << "Socket creation failed." << std::endl;
 		return std::make_tuple(false, "Socket unable to create.");
 	}
 
@@ -33,8 +29,9 @@ std::tuple<bool, std::string> Socket::create(std::string hostname, int port) {
 		return std::make_tuple(false, "Socket connect failed.");
 	}
 
-	return std::make_tuple(true, "");
+	// fcntl(sockid, F_SETFL, O_NONBLOCK);
 
+	return std::make_tuple(true, "");
 }
 
 std::tuple<bool, std::string> Socket::createSSL() {
@@ -59,7 +56,6 @@ std::tuple<bool, std::string> Socket::createSSL() {
 
     if (SSL_connect(ssl) == -1) {
     	ERR_print_errors_fp(stderr);
-    	std::cerr << "Hello" << std::endl;
     } else {
     	// char *msg = "Hello???";
 
@@ -81,8 +77,6 @@ std::tuple<bool, std::string> Socket::createSSL() {
 		    	return std::make_tuple(false, "No certificate.");
 		    }
         }
-        // SSL_write(ssl, msg, strlen(msg));			/* encrypt & send message */
-        // std::cerr << ssl << std::endl;
 
         std::string reply = "";
 
@@ -95,7 +89,7 @@ std::tuple<bool, std::string> Socket::createSSL() {
 		    reply += std::string(buf);
 	    } while(err == sizeof(buf) - 1);
 
-        std::cerr << "Received: " << reply << std::endl;
+        // std::cerr << "Received: " << reply << std::endl;
 
         SSL_set_read_ahead(ssl, 1);
     }
@@ -107,7 +101,7 @@ std::tuple<bool, std::string> Socket::createSSL() {
 
 Socket::~Socket() {
 	join = true;
-	// receiver.join();
+	receiver.join();
 	SSL_shutdown (ssl);
 	close(sockid);
 	SSL_CTX_free(ctx);
@@ -134,18 +128,21 @@ void Socket::createThreads() {
 				} else break;
 			} while(true);
 			mtx.unlock();
-			if (!SSL_pending(ssl)) {
-				std::this_thread::sleep_for(10ms);
-			}
+			// if (!SSL_pending(ssl)) {
+			// 	std::this_thread::sleep_for(10ms);
+			// }
 		}
 	});
 }
 
 bool Socket::send(const std::string &s) {
 	// std::cerr << s << std::endl;
-	if (ssl == NULL) std::cerr << "IAMNULL" << std::endl;
+	// if (ssl == NULL) std::cerr << "IAMNULL" << std::endl;
 	int err = SSL_write (ssl, s.c_str(), s.size());
-    CHK_SSL(err); // Graceful TODO
+	if (err == -1) {
+		ERR_print_errors_fp(stderr);
+		return false;
+	}
 }
 
 std::string Socket::receive() {
@@ -170,9 +167,9 @@ std::string Socket::receive(std::regex rgx) {
 		std::string line = receive();
 		msg += line;
 		line = line.substr(0, line.size()-2);
-		std::cerr << "LINE: " << line << std::endl;
+		// std::cerr << "LINE: " << line << std::endl;
 		if (std::regex_match(line, rgx)) {
-			std::cerr << "Regex Match: " << line << std::endl;
+			// std::cerr << "Regex Match: " << line << std::endl;
 			break;
 		}
 	}

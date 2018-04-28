@@ -4,15 +4,20 @@ IMAPConnection::IMAPConnection(const std::string &hostname, int port) {
     id_string = "imapmailcPVclientpv";
     rgx = std::regex("imapmailcPVclientpv ((OK)|(NO)|(BAD)) .*");
     std::tuple<bool, std::string> e = socket.create(hostname, port);
-    if(!std::get<0>(e)) std::cerr << std::get<1>(e) << std::endl;
+    if(!std::get<0>(e)) {
+        std::cerr << std::get<1>(e) << std::endl;
+    }
     std::tuple<bool, std::string> e1 = socket.createSSL();
-    if(!std::get<0>(e1)) std::cerr << std::get<1>(e1) << std::endl;
+    if(!std::get<0>(e1)) {
+        std::cerr << std::get<1>(e1) << std::endl;
+    }
 }
 
 bool IMAPConnection::login(const std::string &username, const std::string &password) {
     std::cerr << "login" << std::endl;
     std::string command = id_string + " login " + username + " " + password +"\r\n";
     socket.send(command);
+    std::cerr << "sent" << std::endl;
     std::string response = socket.receive(rgx);
     std::cerr << "DONE" << response << std::endl;
     return check_response(response, id_string);
@@ -41,11 +46,16 @@ bool IMAPConnection::check_response(const std::string &response, const std::stri
         return 0;
     
     if (regex_search(response, std::regex(BADrgx) )){
-        std::cerr << "[ERROR] BAD command: " << response;
+        // std::cerr << "[ERROR] BAD command: " << response;
         return 0;
     }
-    
-    std::cerr << "Program must not reach here .........................." << std::endl << std::endl;
+
+    std::cerr << "DONT: " << response << std::endl;
+
+    exit(1);
+
+    return 1;    
+    // std::cerr << "Program must not reach here .........................." << std::endl << std::endl;
 }
 
 bool IMAPConnection::createMailbox(const std::string &mailbox) {
@@ -149,7 +159,7 @@ std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::s
 
     std::regex number("([0-9]+)");
     std::smatch sm;
-    std::cerr << "In search mails, recieved: " << response << std::endl;
+    // std::cerr << "In search mails, recieved: " << response << std::endl;
 
     while (regex_search(response, sm, number)){
         uids.push_back(std::stoi(sm[1]));
@@ -174,7 +184,7 @@ std::vector<Mail> IMAPConnection::getUnseenMails(const std::string &mailbox){
     if (response_id) {
         std::regex number("([0-9]+)");
         std::smatch sm;
-        std::cerr << "In unseen mails, recieved: " << response;
+        // std::cerr << "In unseen mails, recieved: " << response;
         std::vector<int> uids;
         
         while (regex_search(response, sm, number)){
@@ -184,7 +194,7 @@ std::vector<Mail> IMAPConnection::getUnseenMails(const std::string &mailbox){
         
         std::vector<int>::iterator it = uids.begin();
         for(; it!=uids.end(); it++){
-            std::cerr << "Fetching mail uid: " << *it;
+            // std::cerr << "Fetching mail uid: " << *it;
             mails.push_back(getMail(mailbox, *it));
         }
         
@@ -216,7 +226,7 @@ std::vector<Mail> IMAPConnection::getTopMails(const std::string &mailbox, int k)
     if (response_id) {
         std::regex number("([0-9]+)");
         std::smatch sm;
-        std::cerr << "In top k mails, recieved: " << response;
+        // std::cerr << "In top k mails, recieved: " << response;
         std::vector<int> uids;
         
         while (regex_search(response, sm, number)){
@@ -227,7 +237,7 @@ std::vector<Mail> IMAPConnection::getTopMails(const std::string &mailbox, int k)
         if (uids.size() < k) k = uids.size();
         std::vector<int>::iterator it = uids.end() - k;
         for(; it!=uids.end(); it++){
-            std::cerr << "Fetching mail uid: " << *it;
+            // std::cerr << "Fetching mail uid: " << *it;
             mails.push_back(getMail(mailbox, *it));
         }
     }
@@ -248,7 +258,7 @@ std::vector<std::string> IMAPConnection::getmailboxes(){
         while (regex_search(response, sm, name)){
             mailboxes.push_back(sm[1]);
             response = sm.suffix();
-            std::cerr << "Detected mailbox:  " << sm[1] << std::endl;
+            // std::cerr << "Detected mailbox:  " << sm[1] << std::endl;
         }
     }
     
@@ -341,7 +351,7 @@ Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
 
         int count = 1;
         int read = 0;
-        std::cerr << response << std::endl;
+        // std::cerr << response << std::endl;
         std::getline(ss, s);
         while(std::getline(ss, s)){
             text.push_back(s);            
