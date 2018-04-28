@@ -49,26 +49,29 @@ bool SMTPConnection::send(const std::string &from, const std::string &to,
 	socket.send("MAIL FROM:<"+from+">\r\n");
 	out = socket.receive();
 	if (!std::regex_search(out, std::regex("^250 "))) {
+		std::cerr << out << std::endl;
 		return false;
 	}
 	socket.send("RCPT TO:<"+to+">\r\n");
 	out = socket.receive();
 	if (!std::regex_search(out, std::regex("^250 "))) {
+		std::cerr << out << std::endl;
 		return false;
 	}
 	socket.send("DATA\r\n");
 	out = socket.receive();
 	if (!std::regex_search(out, std::regex("^354 "))) {
+		std::cerr << out << std::endl;
 		return false;
 	}
 	socket.send("From: "+from+"\r\n"
 				"To: "+to+"\r\n"
 				"Subject: "+subject+"\r\n\r\n"
-				+body+"\r\n\r\n.\r\n");
+				+body);
 	out = socket.receive();
 	if (!std::regex_search(out, std::regex("^250 "))) {
+		std::cerr << out << std::endl;
 		return false;
 	}
-	std::cerr << out << std::endl;
 	return true;
 }

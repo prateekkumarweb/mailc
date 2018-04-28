@@ -201,7 +201,7 @@ std::vector<Mail> IMAPConnection::getUnseenMails(const std::string &mailbox){
         // To restore the original position, we remove the flag Seen from these mails
         it = uids.begin();
         for(; it!=uids.end(); it++){
-            command = id_string + " uid store " + *it +" -flags (\Seen) \r\n";
+            command = id_string + " uid store " + std::to_string(*it) +" -flags (\\Seen) \r\n";
             socket.send(command);
             std::string response = socket.receive(rgx);
             response_id = check_response(response, id_string);
@@ -266,15 +266,15 @@ std::vector<std::string> IMAPConnection::getmailboxes(){
     return mailboxes;
 }
 
-bool IMAPConnection::select(const std:string &mailbox){
+bool IMAPConnection::select(const std::string &mailbox){
     std::string id_string = "a";
     std::string command = id_string + " select " + mailbox +"\r\n";
     socket.send(command);
     std::string response = socket.receive(rgx);
-    return response_id = check_response(response, id_string);
+    return check_response(response, id_string);
 }
 
-std::vector<int> IMAPConnection::getAllmails(const std:string &mailbox){
+std::vector<int> IMAPConnection::getAllmails(const std::string &mailbox){
     std::vector<int> uids;
     
     std::string id_string = "a";

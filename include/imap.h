@@ -51,9 +51,9 @@ public:
 	
 	std::vector<std::string> getmailboxes();
 	
-	bool select(const std:string &mailbox);
+	bool select(const std::string &mailbox);
 	
-	std::vector<int> getAllmails(const std:string &mailbox);
+	std::vector<int> getAllmails(const std::string &mailbox);
 
 	// std::vector<Mail> search(???);
 

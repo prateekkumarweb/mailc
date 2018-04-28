@@ -17,3 +17,8 @@ target_link_libraries(client ${OPENSSL_LIBRARIES})
 
 find_package(Threads REQUIRED)
 target_link_libraries(client Threads::Threads)
+
+add_library(stdc++fs UNKNOWN IMPORTED)
+set_property(TARGET stdc++fs PROPERTY IMPORTED_LOCATION "/usr/lib/gcc/x86_64-linux-gnu/7/libstdc++fs.a")
+
+target_link_libraries(client stdc++fs)

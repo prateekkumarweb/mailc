@@ -2,11 +2,13 @@
 #define CLIUTILS_H
 
 #include "imap.h"
-#include <filesystem>
 #include <dirent.h>
 #include <fstream>
+#include <string>
 #include <experimental/filesystem>
 
 namespace fs = std::experimental::filesystem;
 
 void sync();
+
+#endif
