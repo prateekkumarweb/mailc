@@ -27,8 +27,9 @@ namespace cliutils {
 	bool sendMail(config &config, const std::string &to,
 		const std::string &subject, const std::string &msg);
     bool deleteMail(IMAPConnection &imap, const std::string& mailbox, int uid);
-    std::vector<std::string> readMail(const std::string& mailbox, int uid);
-    std::vector<int> searchmails(IMAPConnection &imap, const std::string &mailbox, const std::string &from,
+    Mail readMail(const std::string& mailbox, int uid);
+    std::vector<Mail> getMails(IMAPConnection &imap, const std::string &mailbox, std::vector<int> uids);
+    std::vector<int> searchMails(IMAPConnection &imap, const std::string &mailbox, const std::string &from,
                 const std::string &to, const std::string &subject, const std::string &text,
                 const std::string &nottext, const std::string &since, const std::string &before);
     bool createMailbox(IMAPConnection &imap, const std::string &mailbox);

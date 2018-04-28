@@ -107,10 +107,10 @@ bool IMAPConnection::deleteMail(Mail mail) {
     response_id = check_response(response, id_string);
     if (!response_id) return response_id;
 
-    command = id_string + " expunge " + std::to_string(mail.uid) + "\r\n";
+    command = id_string + " uid expunge " + std::to_string(mail.uid) + "\r\n";
     socket.send(command);
     response = socket.receive(rgx);
-    return response_id = check_response(response, id_string);
+    return check_response(response, id_string);
 }
 
 std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::string &from,
@@ -143,13 +143,13 @@ std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::s
     socket.send(command);
     std::string response = socket.receive(rgx);
     response_id = check_response(response, id_string);
-    if (response_id) {
+    if (!response_id) {
         return uids;
     }
 
     std::regex number("([0-9]+)");
     std::smatch sm;
-    std::cerr << "In search mails, recieved: " << response;
+    std::cerr << "In search mails, recieved: " << response << std::endl;
 
     while (regex_search(response, sm, number)){
         uids.push_back(std::stoi(sm[1]));

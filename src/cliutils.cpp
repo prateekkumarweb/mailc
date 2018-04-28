@@ -147,31 +147,34 @@ bool cliutils::deleteMail(IMAPConnection &imap, const std::string& mailbox, int 
     return response;
 }
 
-std::vector<std::string> cliutils::readMail(const std::string& mailbox, int uid) {
+Mail cliutils::readMail(const std::string& mailbox, int uid) {
     std::string path = MAIL_PATH() + mailbox + "/" + std::to_string(uid) + ".m";
     std::ifstream mailfile(path);
     std::string line;
-    std::vector<std::string> contents;
+    Mail mail;
+    mail.uid = uid;
     if (mailfile.is_open()){
         std::getline(mailfile, line);
-        contents.push_back(line);
+        mail.from = line;
         getline(mailfile, line);
-        contents.push_back(line);
+        mail.to = line;
         getline(mailfile, line);
-        contents.push_back(line);
+        mail.subject = line;
         getline(mailfile, line);
-        contents.push_back(line);
+        mail.date = line;
         std::string text;
         while (getline(mailfile, line)){
             text += line + '\n';
         }
-        contents.push_back(text);
+        mail.text = text;
         mailfile.close();
+    } else {
+        mail.uid = -1;
     }
-    return contents;    
+    return mail;    
 }
 
-std::vector<int> cliutils::searchmails(IMAPConnection &imap, const std::string &mailbox, const std::string &from,
+std::vector<int> cliutils::searchMails(IMAPConnection &imap, const std::string &mailbox, const std::string &from,
                 const std::string &to, const std::string &subject, const std::string &text,
                 const std::string &nottext, const std::string &since, const std::string &before) {
 
@@ -253,4 +256,14 @@ bool cliutils::sendMail(config &config, const std::string &to, const std::string
     } else {
         return false;
     }
+}
+
+std::vector<Mail> cliutils::getMails(IMAPConnection &imap, const std::string &mailbox, std::vector<int> uids) {
+    std::vector<Mail> mails;
+
+    for(auto it = uids.begin(); it != uids.end(); it++){
+        mails.push_back(readMail(mailbox, *it));
+    }
+
+    return mails;
 }
