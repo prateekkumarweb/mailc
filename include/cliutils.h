@@ -7,21 +7,26 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <random>
 #include <experimental/filesystem>
 
 struct config {
-    std::string imap_server;
     int imap_port;
-    std::string smtp_server;
     int smtp_port;
+    std::string imap_server;
+    std::string smtp_server;
     std::string username;
     std::string password;
+    std::string name;
 };
 
 namespace fs = std::experimental::filesystem;
 
 namespace cliutils {
 	bool sync(IMAPConnection &imap);
+	bool sendMail(config &config, const std::string &to,
+		const std::string &subject, const std::string &msg);
+
 };
 
 #endif

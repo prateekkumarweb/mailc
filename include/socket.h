@@ -37,7 +37,6 @@ private:
 	int sockid;
 	SSL_CTX *ctx;
     SSL *ssl;
-    std::thread sender;
     std::thread receiver;
     std::mutex mtx;
     std::queue<std::string> messages;
