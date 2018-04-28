@@ -98,12 +98,12 @@ std::tuple<int, int, int> IMAPConnection::getCount(const std::string &mailbox) {
 }
 
 bool IMAPConnection::deleteMail(Mail mail) {
-    bool response_id = select(response);
+    bool response_id = select(mail.mailbox);
     if (!response_id) return response_id;
 
-    command = id_string + " uid store " + std::to_string(mail.uid) + " +FLAGS (\\Deleted)\r\n";
+    std::string command = id_string + " uid store " + std::to_string(mail.uid) + " +FLAGS (\\Deleted)\r\n";
     socket.send(command);
-    response = socket.receive(rgx);
+    std::string response = socket.receive(rgx);
     response_id = check_response(response, id_string);
     if (!response_id) return response_id;
 
@@ -123,7 +123,7 @@ std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::s
         return uids;
     }
 
-    command = id_string + " uid search";
+    std::string command = id_string + " uid search";
     if (from != "")
         command += " from \"" + from + "\"";
     if (to != "")
@@ -141,7 +141,7 @@ std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::s
 
     command += "\r\n";
     socket.send(command);
-    response = socket.receive(rgx);
+    std::string response = socket.receive(rgx);
     response_id = check_response(response, id_string);
     if (response_id) {
         return uids;
@@ -162,14 +162,14 @@ std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::s
 std::vector<Mail> IMAPConnection::getUnseenMails(const std::string &mailbox){
     std::vector<Mail> mails;
 
-    bool response_id = select(response);
+    bool response_id = select(mailbox);
     if (!response_id) {
         return mails;
     }    
     
-    command = id_string + " uid search unseen\r\n";
+    std::string command = id_string + " uid search unseen\r\n";
     socket.send(command);
-    response = socket.receive(rgx);
+    std::string response = socket.receive(rgx);
     response_id = check_response(response, id_string);
     if (response_id) {
         std::regex number("([0-9]+)");
