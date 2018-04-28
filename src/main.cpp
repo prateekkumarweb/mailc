@@ -2,7 +2,23 @@
 #include "smtp.h"
 #include "cliutils.h"
 
-int main(){
+#include <readline/readline.h>
+#include <readline/history.h>
+
+std::vector<std::string> vocabulory{"help", "send", "quit", "read", "search",
+                        "delete", "sync", "list", "create", "deletemb", "rename"};
+
+char** command_completion(const char *text, int start, int end);
+
+int main(int argc, char** argv){
+
+    if (argc > 1 && std::string(argv[1]) == "-d") {
+        rl_bind_key('\t', rl_insert);
+    }
+
+    char *buf;
+
+    rl_attempted_completion_function = command_completion;
 
     std::cout << "IMAP SMTP Mail Client" << std::endl;
     config config{993, 465, "imap.zoho.com",
@@ -15,9 +31,15 @@ int main(){
     }
 
     std::string cmd;
-    std::cout << "client> ";
 
-    while (std::getline(std::cin, cmd)) {
+    while ((buf = readline("client> ")) != nullptr) {
+        cmd = std::string(buf);
+        if (cmd.size() > 0) {
+            add_history(buf);
+        }
+        free(buf);
+        std::stringstream scmd(cmd);
+        scmd >> cmd;
         if (cmd == "help") {
             std::cout << "help\t\tDisplay this list" << std::endl;
             std::cout << "send\t\tSend an email" << std::endl;
@@ -159,10 +181,38 @@ int main(){
         } else {
             std::cout << "Invalid command. Type help for valid commands." << std::endl;
         }
-        std::cout << "client> ";
     }
 
     std::cout << std::endl;
 
     return 0;
+}
+
+char* command_generator(const char *text, int state) {
+    static std::vector<std::string> matches;
+    static size_t match_index = 0;
+
+    if (state == 0) {
+        matches.clear();
+        match_index = 0;
+
+        std::string textstr(text);
+        for (auto word : vocabulory) {
+            if (word.size() >= textstr.size() &&
+                word.compare(0, textstr.size(), textstr) == 0) {
+                matches.push_back(word);
+            }
+        }
+    }
+
+    if (match_index >= matches.size()) {
+        return nullptr;
+    } else {
+        return strdup(matches[match_index++].c_str());
+    }
+}
+
+char** command_completion(const char *text, int start, int end) {
+    rl_attempted_completion_over = 1;
+    return rl_completion_matches(text, command_generator);
 }
