@@ -72,6 +72,13 @@ bool IMAPConnection::renameMailbox(const std::string &oldmailbox, const std::str
     return check_response(response, id_string);
 }
 
+bool IMAPConnection::noop(){
+    std::string command = "a noop\r\n";
+    socket.send(command);
+    std::string response = socket.receive(rgx);
+    return check_response(response, "a");
+}
+
 std::tuple<int, int, int> IMAPConnection::getCount(const std::string &mailbox){
     std::string id_string = "a";
     std::string command = id_string + " examine " + mailbox +"\r\n";
@@ -130,19 +137,19 @@ std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::s
 
     command = id_string + " search";
     if (from != "")
-        command += " from " + from;
+        command += " from \"" + from + "\"";
     if (to != "")
-        command += " to " + to;
+        command += " to \"" + to + "\"";
     if (subject != "")
-        command += " subject " + subject;
+        command += " subject \"" + subject + "\"";
     if (text != "")
-        command += " text " + text;
+        command += " text \"" + text + "\"";
     if (since != "")
-        command += " since " + since;
+        command += " since \"" + since + "\"";
     if (before != "")
-        command += " since " + since;
+        command += " before \"" + before + "\"";
     if (nottext != "")
-        command += " not text " + nottext;
+        command += " not text \"" + nottext + "\"";
 
     command += "\r\n";
     socket.send(command);
@@ -386,4 +393,14 @@ Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
     }
     
     return mail;
+}
+
+std::vector<Mail> getMails(const std::string &mailbox, std::vector<int> uids){
+    std::vector<Mail> mails;
+
+    for(auto it = uids.begin(); it != uids.end(); it++){
+        mails.push_back(getMail(mailbox, *it));
+    }
+
+    return mails;
 }
