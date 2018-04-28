@@ -98,10 +98,7 @@ std::tuple<int, int, int> IMAPConnection::getCount(const std::string &mailbox) {
 }
 
 bool IMAPConnection::deleteMail(Mail mail) {
-    std::string command = id_string + " select " + mail.mailbox +"\r\n";
-    socket.send(command);
-    std::string response = socket.receive(rgx);
-    bool response_id = check_response(response, id_string);
+    bool response_id = select(response);
     if (!response_id) return response_id;
 
     command = id_string + " uid store " + std::to_string(mail.uid) + " +FLAGS (\\Deleted)\r\n";
@@ -121,10 +118,7 @@ std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::s
                 const std::string &nottext, const std::string &since, const std::string &before){
     std::vector<int> uids;
 
-    std::string command = id_string + " select " + mailbox +"\r\n";
-    socket.send(command);
-    std::string response = socket.receive(rgx);
-    bool response_id = check_response(response, id_string);
+    bool response_id = select(mailbox);
     if (!response_id) {
         return uids;
     }
@@ -168,10 +162,7 @@ std::vector<int> IMAPConnection::search(const std::string &mailbox, const std::s
 std::vector<Mail> IMAPConnection::getUnseenMails(const std::string &mailbox){
     std::vector<Mail> mails;
 
-    std::string command = id_string + " select " + mailbox +"\r\n";
-    socket.send(command);
-    std::string response = socket.receive(rgx);
-    bool response_id = check_response(response, id_string);
+    bool response_id = select(response);
     if (!response_id) {
         return mails;
     }    

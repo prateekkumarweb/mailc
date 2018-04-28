@@ -137,6 +137,16 @@ bool cliutils::sync(IMAPConnection &imap){
     return true;
 }
 
+bool deleteMail(IMAPConnection &imap, const std::string& mailbox, int uid){
+    Mail mail;
+    mail.uid = uid;
+    mail.mailbox = mailbox;
+    bool response = imap.deleteMail(Mail);
+    if (response)
+        sync();
+    return response;
+}
+
 std::vector<std::string> readMail(const std::string& mailbox, int uid){
     std::string path = MAIL_PATH() + mailbox + "/" + std::to_string(uid) + ".m";
     std::ifstream mailfile(path);
