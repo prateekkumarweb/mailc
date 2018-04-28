@@ -38,8 +38,12 @@ public:
                 const std::string &nottext = "", const std::string &since = "", const std::string &before = "");
 
 	Mail getMail(const std::string &mailbox, const int uid);
+	
+	std::vector<Mail> getMails(const std::string &mailbox, std::vector<int> uids);
 
 	bool deleteMail(Mail mail);
+
+	bool noop();
 
 	std::tuple<int, int, int> getCount(const std::string &mailbox);
 

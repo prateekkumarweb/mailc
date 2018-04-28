@@ -127,3 +127,57 @@ bool send(const std::string &from, const std::string &to,
 	const std::string &subject, const std::string &body){
 	    
 }
+
+std::vector<int> searchmails(const std::string &mailbox, const std::string &from,
+                const std::string &to, const std::string &subject, const std::string &text,
+                const std::string &nottext, const std::string &since, const std::string &before){
+
+    if (since != ""){
+        std::string segment;
+        std::vector<std::string> sincelist;
+
+        while(std::getline(from, segment, '-')){
+            sincelist.push_back(segment);
+        }
+
+        if (sincelist.size() != 3 || sincelist[1].size() != 3){
+            return std::vector<int> ();
+        }
+    }
+
+    if (before != ""){
+        std::string segment;
+        std::vector<std::string> beforelist;
+
+        while(std::getline(from, segment, '-')){
+            beforelist.push_back(segment);
+        }
+
+        if (beforelist.size() != 3 || beforelist[1].size() != 3){
+            return std::vector<int> ();
+        }
+    }
+
+    return imap.search(mailbox, from, to, subject, text, nottext, since, before);
+}
+
+bool createMailbox(const std::string &mailbox){
+    bool response = imap.createMailbox(mailbox);
+    if (response)
+        sync();
+    return response;
+}
+
+bool deleteMailbox(const std::string &mailbox){
+    bool response = imap.deleteMailbox(mailbox);
+    if (response)
+        sync();
+    return response;
+}
+
+bool renameMailbox(const std::string &oldmailbox, const std::string &newmailbox){
+    bool response = imap.renameMailbox(oldmailbox, newmailbox);
+    if (response)
+        sync();
+    return response;
+}
