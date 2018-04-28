@@ -18,7 +18,6 @@ struct Mail {
     std::string subject;
     std::string date;
     std::string text;
-    std::string html;
 };
 
 class IMAPConnection {

@@ -215,10 +215,27 @@ bool renameMailbox(IMAPConnection &imap, const std::string &oldmailbox, const st
     return response;
 }
 
-bool sendMail(config &config, const std::string &from, const std::string &to, const std::string &subject, const std::string &msg) {
+std::random_device rd;
+std::mt19937 rng(rd());
+
+bool cliutils::sendMail(config &config, const std::string &to, const std::string &subject, const std::string &msg) {
     SMTPConnection smtp(config.smtp_server, config.smtp_port);
     smtp.auth(config.username, config.password);
+    std::string from_ = "<" + config.username + ">";
+    std::string to_ = "<"+to+">";
     std::string body = "";
 
-    // TODO send
+    std::uniform_int_distribution<int> uni(0, INT_MAX);
+
+    std::string sep = "------=_Part_"+std::to_string(uni(rng))+"."+std::to_string(uni(rng))+std::to_string(uni(rng));
+
+    body += "From: "+config.name+" <"+config.username+">\r\n"
+        "To: <"+to+">\r\n"
+        "Subject: "+subject+"\r\n"
+        "MIME-Version: 1.0\r\n"
+        "Content-Type: text/plain\r\n"
+        "\r\n"
+        +msg+"\r\n\r\n.\r\n";
+
+    return smtp.send(from_, to_, subject, body);
 }

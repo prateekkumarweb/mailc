@@ -68,14 +68,12 @@ bool SMTPConnection::send(const std::string &from, const std::string &to,
 	if (body.size() < 5 || body.substr(body.size()-5, 5) != "\r\n.\r\n") {
 		body2 += "\r\n.\r\n";
 	}
-	socket.send("From: "+from+"\r\n"
-				"To: "+to+"\r\n"
-				"Subject: "+subject+"\r\n\r\n"
-				+body2);
+	socket.send(body2);
 	out = socket.receive();
 	if (!std::regex_search(out, std::regex("^250 "))) {
 		std::cerr << out << std::endl;
 		return false;
 	}
+
 	return true;
 }

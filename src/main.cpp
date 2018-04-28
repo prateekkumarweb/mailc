@@ -5,46 +5,29 @@
 int main(){
 
     std::cout << "IMAP SMTP Mail Client" << std::endl;
-    config config{"imap.zoho.com", 993,
-        "smtp.zoho.com", 465, "test@prateekkumar.in",
-        "testtest"};
-    // Check if IMAP config exists
-    // If exists then read them
-
-    // if (true /* If config does not exist */) {
-    //     std::cout << "Enter IMAP settings:" << std::endl;
-    //     std::cout << "IMAP server: ";
-    //     std::cin >> config.imap_server;
-    //     std::cout << "IMAP port: ";
-    //     std::cin >> config.imap_port;
-    //     std::cout << "SMTP server: ";
-    //     std::cin >> config.smtp_server;
-    //     std::cout << "SMTP port: ";
-    //     std::cin >> config.smtp_port;
-    // } else {
-    //     // populate config
-    // }
+    config config{993, 465, "imap.zoho.com",
+        "smtp.zoho.com", "test@prateekkumar.in",
+        "testtest", "Prateek Test"};
 
     IMAPConnection imap(config.imap_server, config.imap_port);
     if (imap.login(config.username, config.password)) {
         std::cout << "Login successful" << std::endl;
     }
-    // SMTPConnection smtp(config.smtp_server, config.smtp_port);
 
     std::string cmd;
     std::cout << "client> ";
 
     while (std::getline(std::cin, cmd)) {
         if (cmd == "help") {
-            // TODO
+            std::cout << "send\tSend an email" << std::endl;
+            std::cout << "quit\tQuit the program" << std::endl;
+            std::cout << "sync\tSync the folders and mails" << std::endl;
         }
         else if (cmd == "quit") {
             break;
         }
         else if (cmd == "send") {
-            std::string from, to, subject, body, line;
-            std::cout << "from> ";
-            std::getline(std::cin, from);
+            std::string to, subject, body, line;
             std::cout << "to> ";
             std::getline(std::cin, to);
             std::cout << "subject> ";
@@ -54,20 +37,19 @@ int main(){
                 std::getline(std::cin, line);
                 body += line + "\r\n";
             }
-            SMTPConnection smtp(config.smtp_server, config.smtp_port);
-            if (smtp.auth(config.username, config.password))
-            {
-                if (smtp.send(from, to, subject, body)) {
-                    std::cout << "Sent mail." << std::endl;
-                } else {
-                    std::cout << "Mail could not be sent." << std::endl;
-                }
+
+            body = body.substr(0, body.size()-5);
+
+            if (cliutils::sendMail(config, to, subject, body)) {
+                std::cout << "Sent mail." << std::endl;
             } else {
-                std::cout << "Auth failed" << std::endl;
+                std::cout << "Mail could not be sent." << std::endl;
             }
         }
         else if (cmd == "sync") {
             cliutils::sync(imap);
+        } else {
+            std::cout << "Invalid command. Type help for valid commands." << std::endl;
         }
         std::cout << "client> ";
     }

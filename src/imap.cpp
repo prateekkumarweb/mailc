@@ -337,55 +337,32 @@ Mail IMAPConnection::getMail(const std::string &mailbox, const int uid){
     
     mail.uid = uid;
     
-    command = id_string + " uid fetch " + std::to_string(mail.uid) + " rfc822.text\r\n";
+    command = id_string + " uid fetch " + std::to_string(mail.uid) + " body[1]\r\n";
     socket.send(command);
     response = socket.receive(rgx);
     response_id = check_response(response, id_string);
     if (response_id) {
-        std::cerr << "Here" << std::endl;
+        // std::cerr << "Here" << std::endl;
         response.erase(std::remove(response.begin(), response.end(), '\r'), response.end());
         std::stringstream ss(response);
         std::string s = "";
-        std::string sep = "";
-        std::string text = "";
-        std::string html = "";
+        std::vector<std::string> text;
 
         int count = 1;
         int read = 0;
         std::cerr << response << std::endl;
+        std::getline(ss, s);
         while(std::getline(ss, s)){
-            // if (s[s.size()-1] == '\r') s = s.substr(0, s.size()-1);
-            if (s == "" && read == 0) continue;
-            if (count == 2){
-                sep = s;
-                std::cerr << "SEP:" << sep << std::endl; 
-                sep.erase(std::remove(sep.begin(), sep.end(), '-'), sep.end());
-                std::getline(ss, s);
-                std::getline(ss, s);
-                read = 1;
-            }
-            else if (read == 1){
-                if (s.find(sep) == std::string::npos){
-                    text += s + '\n';
-                } else {
-                    read = 2;
-                    std::getline(ss, s);
-                    std::getline(ss, s);
-                }
-            }
-            else if (read == 2){
-                if (s.find(sep) == std::string::npos){
-                    html += s + '\n';
-                } else break;
-            }
-            count++;
+            text.push_back(s);            
         }
-        std::cout << sep << std::endl << "TEXT: " <<    text << std::endl << html;
-        mail.text = text;
-        mail.html = html;
+        text.pop_back();
+        text.pop_back();
+        mail.text = "";
+        for (auto &s: text) {
+            mail.text += s+"\n";
+        }
     } else{
         mail.text = "\n";
-        mail.html = "\n";
     }
     
     return mail;
