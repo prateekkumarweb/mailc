@@ -244,6 +244,32 @@ std::vector<Mail> IMAPConnection::getTopMails(const std::string &mailbox, int k)
     return mails;
 }
 
+bool IMAPConnection::moveMail(const std::string &old_mailbox, int uid, const std::string &new_mailbox) {
+    bool response_id = select(old_mailbox);
+    if (!response_id)
+        return false;
+        
+    std::string command = id_string + " uid copy " + std::to_string(uid) + " " + new_mailbox + "\r\n";
+    socket.send(command);
+    std::string response = socket.receive(rgx);
+    response_id = check_response(response, id_string);
+    if (!response_id)
+        return false;
+        
+    command = id_string + " uid store " + std::to_string(uid) + " +flags (\\Deleted)\r\n";
+    socket.send(command);
+    response = socket.receive(rgx);
+    response_id = check_response(response, id_string);
+    if (!response_id)
+        return false;
+        
+    command = id_string + " uid expunge " + std::to_string(uid) + "\r\n";
+    socket.send(command);
+    response = socket.receive(rgx);
+    response_id = check_response(response, id_string);
+    return response_id;
+}
+
 std::vector<std::string> IMAPConnection::getmailboxes(){
     std::vector<std::string> mailboxes;
 

@@ -6,7 +6,7 @@
 #include <readline/history.h>
 
 std::vector<std::string> vocabulory{"help", "send", "quit", "read", "search",
-                        "delete", "sync", "list", "create", "deletemb", "rename"};
+                        "delete", "sync", "list", "create", "deletemb", "rename", "move"};
 
 char** command_completion(const char *text, int start, int end);
 
@@ -52,6 +52,7 @@ int main(int argc, char** argv){
             std::cout << "create\t\tCreate a new mailbox" << std::endl;
             std::cout << "deletemb\tDelete an existing mailbox" << std::endl;
             std::cout << "rename\t\tRename a mailbox" << std::endl;
+            std::cout << "move\t\tMove a mail to another mailbox" << std::endl;
         }
         else if (cmd == "quit") {
             break;
@@ -178,6 +179,21 @@ int main(int argc, char** argv){
         }
         else if (cmd == "sync") {
             cliutils::sync(imap);
+        } 
+        else if (cmd == "move") {
+            std::string oldmailbox, newmailbox, uid_str;
+            std::cout << "from_mailbox> ";
+            std::getline(std::cin, oldmailbox);
+            std::cout << "uid> ";
+            std::getline(std::cin, uid_str);
+            std::cout << "to_mailbox> ";
+            std::getline(std::cin, newmailbox);
+            if (cliutils::moveMail(imap, oldmailbox, std::stoi(uid_str), newmailbox)) {
+                std::cout << "Moved mail." << std::endl;
+            } else {
+                std::cout << "Mail could not be moved." << std::endl;
+            }
+            
         } else {
             std::cout << "Invalid command. Type help for valid commands." << std::endl;
         }

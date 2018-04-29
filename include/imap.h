@@ -55,10 +55,8 @@ public:
 	bool select(const std::string &mailbox);
 	
 	std::vector<int> getAllmails(const std::string &mailbox);
-
-	// std::vector<Mail> search(???);
-
-	// std::vector<??> listFolders(const std::string &mailbox, ?? (Wildcard));
+	
+	bool moveMail(const std::string &oldmailbox, int uid, const std::string &newmailbox);
 
 	// ~IMAPConnection();
 private:

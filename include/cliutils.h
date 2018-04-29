@@ -35,6 +35,7 @@ namespace cliutils {
     bool createMailbox(IMAPConnection &imap, const std::string &mailbox);
     bool deleteMailbox(IMAPConnection &imap, const std::string &mailbox);
     bool renameMailbox(IMAPConnection &imap, const std::string &oldmailbox, const std::string &newmailbox);
+    bool moveMail(IMAPConnection &imap, const std::string &oldmailbox, int uid, const std::string &newmailbox);
     std::vector<std::string> getMailboxes();
 };
 

@@ -147,6 +147,13 @@ bool cliutils::deleteMail(IMAPConnection &imap, const std::string& mailbox, int 
     return response;
 }
 
+bool cliutils::moveMail(IMAPConnection &imap, const std::string &oldmailbox, int uid, const std::string &newmailbox) {
+    bool response = imap.moveMail(oldmailbox, uid, newmailbox);
+    if (response)
+        ::sync();
+    return response;
+}
+
 Mail cliutils::readMail(const std::string& mailbox, int uid) {
     std::string path = MAIL_PATH() + mailbox + "/" + std::to_string(uid) + ".m";
     std::ifstream mailfile(path);
