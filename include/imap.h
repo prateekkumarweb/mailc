@@ -1,110 +1,254 @@
+/**
+ * @file
+ */
+
 #ifndef IMAP_H
 #define IMAP_H
 
-#include <tuple>
-#include <string>
-#include <vector>
-#include <regex>
 #include <iostream>
+#include <regex>
+#include <string>
+#include <tuple>
+#include <vector>
 
 #include "socket.h"
 
+/**
+ * @brief Mail structure
+ * @details Stores information about a mail
+ *
+ */
 struct Mail {
-    std::string mailbox;
-    int uid;
-    
-    std::string from;
-    std::string to;
-    std::string subject;
-    std::string date;
-    std::string text;
+  /**
+   * UID of the mail
+   */
+  int uid;
+  /**
+   * Mailbox of the mail
+   */
+  std::string mailbox;
+  /**
+   * From address
+   */
+  std::string from;
+  /**
+   * To address
+   */
+  std::string to;
+  /**
+   * Subject of the mail
+   */
+  std::string subject;
+  /**
+   * Received date of the mail
+   */
+  std::string date;
+  /**
+   * Body of the mail
+   */
+  std::string text;
 };
 
+/**
+ * @brief IMAPConnection class
+ * @details Stores socket which connect to IMAP server, has methos
+ * which implemnet the IMAP commands
+ *
+ */
 class IMAPConnection {
-public:
-	IMAPConnection(const std::string &hostname, int port);
-	bool login(const std::string &username, const std::string &password); // OK, NO, BAD
+ public:
+  /**
+   * @brief Create IMAP connection
+   * @details Create socket, connect using ssl
+   *
+   * @param hostname The hostname of the IMAP server
+   * @param port The port of the IMAP server
+   */
+  IMAPConnection(const std::string &hostname, int port);
 
-	bool noop(); // OK, BAD
-	bool logout();
+  /**
+   * @brief Login in the server
+   * @details Authenticate with server
+   *
+   * @param username The username of the user
+   * @param password The password of the user
+   *
+   * @return Whether the login was successful
+   */
+  bool login(const std::string &username, const std::string &password);
 
-	std::vector<Mail> getUnseenMails(const std::string &mailbox);
+  /**
+   * @brief No operatinon
+   * @details Keeps connection alive
+   * @return Whether NOOP was successfully sent
+   */
+  bool noop();
 
-	std::vector<Mail> getTopMails(const std::string &mailbox, int k);
-	
-	std::vector<int> search(const std::string &mailbox, const std::string &from = "",
-                const std::string &to = "", const std::string &subject = "", const std::string &text = "" ,
-                const std::string &nottext = "", const std::string &since = "", const std::string &before = "");
+  /**
+   * @brief Logout of the server
+   * @details Logout of the server
+   * @return Whether logout was successful
+   */
+  bool logout();
 
-	Mail getMail(const std::string &mailbox, const int uid);
-	
-	std::vector<Mail> getMails(const std::string &mailbox, std::vector<int> uids);
+  /**
+   * @brief Get unseen mails
+   * @details Return all the unseen mails in a mailbox
+   *
+   * @param mailbox The mailbox name
+   * @return List of unseen mails
+   */
+  std::vector<Mail> getUnseenMails(const std::string &mailbox);
 
-	bool deleteMail(Mail mail);
+  /**
+   * @brief Get top k mails
+   * @details Return all the top k mails in a mailbox
+   *
+   * @param mailbox The mailbox name
+   * @param k The number of the mails to return
+   *
+   * @return K mails from the mailbox
+   */
+  std::vector<Mail> getTopMails(const std::string &mailbox, int k);
 
-	std::tuple<int, int, int> getCount(const std::string &mailbox);
+  /**
+   * @brief Search mails
+   * @details Search mails from a mailbox with different search criteria
+   *
+   * @param mailbox The mailbox name
+   * @param from From criteria
+   * @param to To criteria
+   * @param subject Search in the subject of the mails
+   * @param text Search in the text of the mails
+   * @param nottext Search the mails not containing a text
+   * @param since Search mails since a date
+   * @param before Search mails before a date
+   *
+   * @return [description]
+   */
+  std::vector<int> search(
+      const std::string &mailbox, const std::string &from = "",
+      const std::string &to = "", const std::string &subject = "",
+      const std::string &text = "", const std::string &nottext = "",
+      const std::string &since = "", const std::string &before = "");
 
-	bool createMailbox(const std::string &mailbox);
+  /**
+   * @brief Get mail from server
+   * @details Get a mail from mailbox with given uid
+   *
+   * @param mailbox The mailbox name
+   * @param uid The uid of the mail
+   *
+   * @return Mail object of the mail
+   */
+  Mail getMail(const std::string &mailbox, const int uid);
 
-	bool renameMailbox(const std::string &oldmailbox, const std::string &newmailbox);
+  /**
+   * @brief Get mails form server
+   * @details Get mails from mailbox with given uids
+   *
+   * @param mailbox The mailbox name
+   * @param uids The uids of the mails
+   *
+   * @return vector of mail objects
+   */
+  std::vector<Mail> getMails(const std::string &mailbox, std::vector<int> uids);
 
-	bool deleteMailbox(const std::string &mailbox);
-	
-	std::vector<std::string> getmailboxes();
-	
-	bool select(const std::string &mailbox);
-	
-	std::vector<int> getAllmails(const std::string &mailbox);
-	
-	bool moveMail(const std::string &oldmailbox, int uid, const std::string &newmailbox);
+  /**
+   * @brief Delete a mail
+   * @details Delete a mail given its details
+   *
+   * @param mail Mail object containg details of the mail
+   * @return Status whether the mail is deleted
+   */
+  bool deleteMail(Mail mail);
 
-	// ~IMAPConnection();
-private:
-	Socket socket;
-	std::string username;
-	std::string password;
-	std::regex rgx;
-	std::string id_string;
-	bool check_response(const std::string &response, const std::string &id_string);
+  /**
+   * @brief Get mail counts
+   * @details Get mail count in a mailbox
+   *
+   * @param mailbox The mailbox name
+   * @return The exists, recent and unseen mails count
+   */
+  std::tuple<int, int, int> getCount(const std::string &mailbox);
+
+  /**
+   * @brief Create mailbox
+   * @details Create a mailbox
+   *
+   * @param mailbox The mailbix to be created
+   *
+   * @return Status whether mailbox is created
+   */
+  bool createMailbox(const std::string &mailbox);
+
+  /**
+   * @brief Rename mailbox
+   * @details Rename a mailbox
+   *
+   * @param oldmailbox Old name of the mailbox
+   * @param newmailbox New name of the mailbox
+   *
+   * @return Status whether the mailbox was renamed
+   */
+  bool renameMailbox(const std::string &oldmailbox,
+                     const std::string &newmailbox);
+
+  /**
+   * @brief Delete mailbox
+   * @details Delete a mailbox
+   *
+   * @param mailbox The mailbox to be deleted
+   *
+   * @return Status whether mailbox is deleted
+   */
+  bool deleteMailbox(const std::string &mailbox);
+
+  /**
+   * @brief Get mailboxes
+   * @details Get mailboxes form the IMAP server
+   * @return Vector of all the mailboxes from server
+   */
+  std::vector<std::string> getmailboxes();
+
+  /**
+   * @brief Select a mailbox
+   * @details Select a mailbox using IMAP protocol
+   *
+   * @param mailbox The mailbox name
+   * @return Status if the mail is selected
+   */
+  bool select(const std::string &mailbox);
+
+  /**
+   * @brief Get all mails
+   * @details Get all mail uids from aa mailbox
+   *
+   * @param mailbox The mailbox
+   * @return List of mail uids
+   */
+  std::vector<int> getAllmails(const std::string &mailbox);
+
+  /**
+   * @brief Move mail
+   * @details Move a mail from one mailbox to another
+   *
+   * @param oldmailbox Current mailbox
+   * @param uid Uid of the mail
+   * @param newmailbox Mailbox into which mail is to be mm=oved
+   * @return Status whether mail was successfully moved
+   */
+  bool moveMail(const std::string &oldmailbox, int uid,
+                const std::string &newmailbox);
+
+ private:
+  Socket socket;
+  std::string username;
+  std::string password;
+  std::regex rgx;
+  std::string id_string;
+  bool check_response(const std::string &response,
+                      const std::string &id_string);
 };
 
 #endif
-
-/**
-
-SELECT MAILBOX
-sends exists, unseen, recent, etc.
-
-EXAMINE similar to SELECT (read-only)
-
-CREATE mailbox
-
-DELETE mailbox
-
-RENAME mailbox
-
-LIST (lists messages)
-
-STATUS mailbox ...
-
-APPEND ?
-
-CHECK ?
-
-CLOSE (Delets msgs flagged)
-
-(CLOSE vs EXPUNGE) ?
-
-SEARCH
-
-FETCH 
-
-STORE ?
-
-COPY mails across mailbox
-
-UID ?
-
-
-
-*/
