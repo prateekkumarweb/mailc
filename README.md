@@ -8,5 +8,5 @@ cd imap_smtp_client
 mkdir build
 cd build
 cmake ..
-./client [options]
+./client
 ```

@@ -50,10 +50,10 @@ bool cliutils::sync(IMAPConnection &imap){
     std::transform(offline_mailboxes.begin(), offline_mailboxes.end(), offline_mailboxes.begin(), tolowercase);
 
     // print_vectors(offline_mailboxes, '\n');
-        
+    std::cout << "Retrieving mailboxes" << std::endl;
     std::vector<std::string> mailboxes = imap.getmailboxes();
     std::transform(mailboxes.begin(), mailboxes.end(), mailboxes.begin(), tolowercase);
-
+    std::cout << "Retrieved mailboxes" << std::endl;
     // print_vectors(mailboxes);
     
     
@@ -71,6 +71,8 @@ bool cliutils::sync(IMAPConnection &imap){
             fs::remove(MAIL_PATH()+tolowercase(*it));
         }
     }
+
+    std::cout << "Mailboxes synced" << std::endl;
     // Within each folder sync mails
         // Mails offline list
         // a select inbox
@@ -82,6 +84,8 @@ bool cliutils::sync(IMAPConnection &imap){
     for (auto it = mailboxes.begin(); it != mailboxes.end(); it++){
         std::string mailbox = *it;
         
+        std::cout << "Syncing " << *it << std::endl;
+
         imap.select(mailbox);
                 
         std::string mailbox_path = MAIL_PATH() + mailbox;
@@ -143,14 +147,14 @@ bool cliutils::deleteMail(IMAPConnection &imap, const std::string& mailbox, int 
     mail.mailbox = mailbox;
     bool response = imap.deleteMail(mail);
     if (response)
-        ::sync();
+        sync(imap);
     return response;
 }
 
 bool cliutils::moveMail(IMAPConnection &imap, const std::string &oldmailbox, int uid, const std::string &newmailbox) {
     bool response = imap.moveMail(oldmailbox, uid, newmailbox);
     if (response)
-        ::sync();
+        sync(imap);
     return response;
 }
 
@@ -217,21 +221,21 @@ std::vector<int> cliutils::searchMails(IMAPConnection &imap, const std::string &
 bool cliutils::createMailbox(IMAPConnection &imap, const std::string &mailbox) {
     bool response = imap.createMailbox(mailbox);
     if (response)
-        ::sync();
+        sync(imap);
     return response;
 }
 
 bool cliutils::deleteMailbox(IMAPConnection &imap, const std::string &mailbox) {
     bool response = imap.deleteMailbox(mailbox);
     if (response)
-        ::sync();
+        sync(imap);
     return response;
 }
 
 bool cliutils::renameMailbox(IMAPConnection &imap, const std::string &oldmailbox, const std::string &newmailbox) {
     bool response = imap.renameMailbox(oldmailbox, newmailbox);
     if (response)
-        ::sync();
+        sync(imap);
     return response;
 }
 
@@ -258,8 +262,6 @@ bool cliutils::sendMail(config &config, const std::string &to, const std::string
         +msg+"\r\n\r\n.\r\n";
 
     if (smtp.send(from_, to_, subject, body)) {
-        // std::cerr << "Sent" << std::endl;
-        ::sync();
         return true;
     } else {
         return false;

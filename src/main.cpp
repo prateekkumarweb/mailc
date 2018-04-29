@@ -173,12 +173,17 @@ int main(int argc, char** argv){
 
             if (cliutils::sendMail(config, to, subject, body)) {
                 std::cout << "Sent mail." << std::endl;
+                sync();
             } else {
                 std::cout << "Mail could not be sent." << std::endl;
             }
         }
         else if (cmd == "sync") {
-            cliutils::sync(imap);
+            if (cliutils::sync(imap)) {
+                std::cout << "Sync complete" << std::endl;
+            } else {
+                std::cout << "Could not sync" << std::endl;
+            }
         } 
         else if (cmd == "move") {
             std::string oldmailbox, newmailbox, uid_str;
