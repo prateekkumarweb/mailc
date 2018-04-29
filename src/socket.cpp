@@ -100,8 +100,8 @@ std::tuple<bool, std::string> Socket::createSSL() {
 }
 
 Socket::~Socket() {
-	join = true;
-	receiver.join();
+	// join = true;
+	receiver.detach();
 	SSL_shutdown (ssl);
 	close(sockid);
 	SSL_CTX_free(ctx);
@@ -113,7 +113,7 @@ void Socket::createThreads() {
 	receiver = std::thread([this](){
 		char buf[1024];
 		std::string reply = "";
-		while (!join) {
+		while (true) {
 			int err = SSL_read(ssl, buf, sizeof(buf)-1);
 			CHK_SSL(err);
 			buf[err] = '\0';
@@ -128,10 +128,8 @@ void Socket::createThreads() {
 				} else break;
 			} while(true);
 			mtx.unlock();
-			// if (!SSL_pending(ssl)) {
-			// 	std::this_thread::sleep_for(10ms);
-			// }
 		}
+		// std::cerr << "Thread complete" << std::endl;
 	});
 }
 

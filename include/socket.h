@@ -41,7 +41,7 @@ private:
     std::thread receiver;
     std::mutex mtx;
     std::queue<std::string> messages;
-    bool join = false;
+    // bool join = false;
 	void createThreads();
 };
 
