@@ -1,0 +1,104 @@
+\hypertarget{classSMTPConnection}{}\section{S\+M\+T\+P\+Connection Class Reference}
+\label{classSMTPConnection}\index{S\+M\+T\+P\+Connection@{S\+M\+T\+P\+Connection}}
+
+
+\hyperlink{classSMTPConnection}{S\+M\+T\+P\+Connection} class.  
+
+
+
+
+{\ttfamily \#include $<$smtp.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classSMTPConnection_a3f3d0375660759191abae144bfeac15a}{S\+M\+T\+P\+Connection} (const std\+::string \&hostname, int port)
+\begin{DoxyCompactList}\small\item\em Create an S\+M\+P\+TP Connection. \end{DoxyCompactList}\item 
+bool \hyperlink{classSMTPConnection_a11fabb5c55b1a68df712bfa34f6524f5}{auth} (const std\+::string \&username, const std\+::string \&password)
+\begin{DoxyCompactList}\small\item\em Login in the server. \end{DoxyCompactList}\item 
+bool \hyperlink{classSMTPConnection_a3dd8487851420ebf087253ceaaa774eb}{send} (const std\+::string \&from, const std\+::string \&to, const std\+::string \&subject, const std\+::string \&body)
+\begin{DoxyCompactList}\small\item\em Send a mail. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classSMTPConnection}{S\+M\+T\+P\+Connection} class. 
+
+Stores socket which connect to S\+M\+TP server, has methos which implemnet the S\+M\+TP commands 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classSMTPConnection_a3f3d0375660759191abae144bfeac15a}\label{classSMTPConnection_a3f3d0375660759191abae144bfeac15a}} 
+\index{S\+M\+T\+P\+Connection@{S\+M\+T\+P\+Connection}!S\+M\+T\+P\+Connection@{S\+M\+T\+P\+Connection}}
+\index{S\+M\+T\+P\+Connection@{S\+M\+T\+P\+Connection}!S\+M\+T\+P\+Connection@{S\+M\+T\+P\+Connection}}
+\subsubsection{\texorpdfstring{S\+M\+T\+P\+Connection()}{SMTPConnection()}}
+{\footnotesize\ttfamily S\+M\+T\+P\+Connection\+::\+S\+M\+T\+P\+Connection (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{hostname,  }\item[{int}]{port }\end{DoxyParamCaption})}
+
+
+
+Create an S\+M\+P\+TP Connection. 
+
+Create socket, intilize ssl and create socket object
+
+
+\begin{DoxyParams}{Parameters}
+{\em hostname} & The hostname of the S\+M\+TP server \\
+\hline
+{\em port} & The port of the S\+M\+TP server \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classSMTPConnection_a11fabb5c55b1a68df712bfa34f6524f5}\label{classSMTPConnection_a11fabb5c55b1a68df712bfa34f6524f5}} 
+\index{S\+M\+T\+P\+Connection@{S\+M\+T\+P\+Connection}!auth@{auth}}
+\index{auth@{auth}!S\+M\+T\+P\+Connection@{S\+M\+T\+P\+Connection}}
+\subsubsection{\texorpdfstring{auth()}{auth()}}
+{\footnotesize\ttfamily bool S\+M\+T\+P\+Connection\+::auth (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{username,  }\item[{const std\+::string \&}]{password }\end{DoxyParamCaption})}
+
+
+
+Login in the server. 
+
+Login in the server with given config
+
+
+\begin{DoxyParams}{Parameters}
+{\em username} & The username of the user \\
+\hline
+{\em password} & The password of the user\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Whether the login was successful 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSMTPConnection_a3dd8487851420ebf087253ceaaa774eb}\label{classSMTPConnection_a3dd8487851420ebf087253ceaaa774eb}} 
+\index{S\+M\+T\+P\+Connection@{S\+M\+T\+P\+Connection}!send@{send}}
+\index{send@{send}!S\+M\+T\+P\+Connection@{S\+M\+T\+P\+Connection}}
+\subsubsection{\texorpdfstring{send()}{send()}}
+{\footnotesize\ttfamily bool S\+M\+T\+P\+Connection\+::send (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{from,  }\item[{const std\+::string \&}]{to,  }\item[{const std\+::string \&}]{subject,  }\item[{const std\+::string \&}]{body }\end{DoxyParamCaption})}
+
+
+
+Send a mail. 
+
+Send a mail using S\+M\+TP Protocol
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & From address \\
+\hline
+{\em to} & To address \\
+\hline
+{\em subject} & Subject of the mail \\
+\hline
+{\em body} & Body of the mail \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the mail is successfully sent 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\hyperlink{smtp_8h}{smtp.\+h}\item 
+src/\hyperlink{smtp_8cpp}{smtp.\+cpp}\end{DoxyCompactItemize}

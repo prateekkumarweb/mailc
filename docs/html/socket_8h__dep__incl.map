@@ -1,0 +1,10 @@
+<map id="include/socket.h" name="include/socket.h">
+<area shape="rect" id="node2" href="$imap_8h.html" title="include/imap.h" alt="" coords="117,80,223,107"/>
+<area shape="rect" id="node7" href="$smtp_8h.html" title="include/smtp.h" alt="" coords="262,80,369,107"/>
+<area shape="rect" id="node9" href="$socket_8cpp.html" title="src/socket.cpp" alt="" coords="393,80,501,107"/>
+<area shape="rect" id="node3" href="$cliutils_8h.html" title="include/cliutils.h" alt="" coords="178,155,293,181"/>
+<area shape="rect" id="node5" href="$main_8cpp.html" title="src/main.cpp" alt="" coords="139,229,236,256"/>
+<area shape="rect" id="node6" href="$imap_8cpp.html" title="src/imap.cpp" alt="" coords="5,155,103,181"/>
+<area shape="rect" id="node4" href="$cliutils_8cpp.html" title="src/cliutils.cpp" alt="" coords="261,229,367,256"/>
+<area shape="rect" id="node8" href="$smtp_8cpp.html" title="src/smtp.cpp" alt="" coords="367,155,466,181"/>
+</map>

@@ -1,0 +1,433 @@
+\hypertarget{classIMAPConnection}{}\section{I\+M\+A\+P\+Connection Class Reference}
+\label{classIMAPConnection}\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+
+
+\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} class.  
+
+
+
+
+{\ttfamily \#include $<$imap.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classIMAPConnection_ad5bc450af38cf05e3c1747a3557939f8}{I\+M\+A\+P\+Connection} (const std\+::string \&hostname, int port)
+\begin{DoxyCompactList}\small\item\em Create I\+M\+AP connection. \end{DoxyCompactList}\item 
+bool \hyperlink{classIMAPConnection_a13d2dba8599abbbf52bc6e1eb4b7db82}{login} (const std\+::string \&username, const std\+::string \&password)
+\begin{DoxyCompactList}\small\item\em Login in the server. \end{DoxyCompactList}\item 
+bool \hyperlink{classIMAPConnection_a64921072bad6e5ae342c54ee9945e3ad}{noop} ()
+\begin{DoxyCompactList}\small\item\em No operatinon. \end{DoxyCompactList}\item 
+bool \hyperlink{classIMAPConnection_a250af5ae627fcdc73f3322237fe537f4}{logout} ()
+\begin{DoxyCompactList}\small\item\em Logout of the server. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{structMail}{Mail} $>$ \hyperlink{classIMAPConnection_ac4fdf095774add4ec038c2738074c4b8}{get\+Unseen\+Mails} (const std\+::string \&mailbox)
+\begin{DoxyCompactList}\small\item\em Get unseen mails. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{structMail}{Mail} $>$ \hyperlink{classIMAPConnection_a0ddf65870bb9a995a3bd48a78d80265a}{get\+Top\+Mails} (const std\+::string \&mailbox, int k)
+\begin{DoxyCompactList}\small\item\em Get top k mails. \end{DoxyCompactList}\item 
+std\+::vector$<$ int $>$ \hyperlink{classIMAPConnection_aef0dd4280dd0f09eaedc69d5dbd54af5}{search} (const std\+::string \&mailbox, const std\+::string \&from=\char`\"{}\char`\"{}, const std\+::string \&to=\char`\"{}\char`\"{}, const std\+::string \&subject=\char`\"{}\char`\"{}, const std\+::string \&text=\char`\"{}\char`\"{}, const std\+::string \&nottext=\char`\"{}\char`\"{}, const std\+::string \&since=\char`\"{}\char`\"{}, const std\+::string \&before=\char`\"{}\char`\"{})
+\begin{DoxyCompactList}\small\item\em Search mails. \end{DoxyCompactList}\item 
+\hyperlink{structMail}{Mail} \hyperlink{classIMAPConnection_a0c9e1f027a1fb2b095f6dcdf8e4d8c47}{get\+Mail} (const std\+::string \&mailbox, const int uid)
+\begin{DoxyCompactList}\small\item\em Get mail from server. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{structMail}{Mail} $>$ \hyperlink{classIMAPConnection_a91f2832ee1eb91fc441e37d473185a31}{get\+Mails} (const std\+::string \&mailbox, std\+::vector$<$ int $>$ uids)
+\begin{DoxyCompactList}\small\item\em Get mails form server. \end{DoxyCompactList}\item 
+bool \hyperlink{classIMAPConnection_aba8f1dc3912b1655dfe5dd2fd76a1d7c}{delete\+Mail} (\hyperlink{structMail}{Mail} mail)
+\begin{DoxyCompactList}\small\item\em Delete a mail. \end{DoxyCompactList}\item 
+std\+::tuple$<$ int, int, int $>$ \hyperlink{classIMAPConnection_a4c93cce25ad9fe1e0ab3950576cdab30}{get\+Count} (const std\+::string \&mailbox)
+\begin{DoxyCompactList}\small\item\em Get mail counts. \end{DoxyCompactList}\item 
+bool \hyperlink{classIMAPConnection_a1029095092aa116c6afafdcafa2cb722}{create\+Mailbox} (const std\+::string \&mailbox)
+\begin{DoxyCompactList}\small\item\em Create mailbox. \end{DoxyCompactList}\item 
+bool \hyperlink{classIMAPConnection_a99c96d59a2ac6bef265c5b283aa2aade}{rename\+Mailbox} (const std\+::string \&oldmailbox, const std\+::string \&newmailbox)
+\begin{DoxyCompactList}\small\item\em Rename mailbox. \end{DoxyCompactList}\item 
+bool \hyperlink{classIMAPConnection_ad74ab3895b9a999dfd4c4930e6a174e3}{delete\+Mailbox} (const std\+::string \&mailbox)
+\begin{DoxyCompactList}\small\item\em Delete mailbox. \end{DoxyCompactList}\item 
+std\+::vector$<$ std\+::string $>$ \hyperlink{classIMAPConnection_a24f78f745447f09d6b9a989f5434f151}{getmailboxes} ()
+\begin{DoxyCompactList}\small\item\em Get mailboxes. \end{DoxyCompactList}\item 
+bool \hyperlink{classIMAPConnection_aa1d8a0670efc9e15e1af37388f7e7726}{select} (const std\+::string \&mailbox)
+\begin{DoxyCompactList}\small\item\em Select a mailbox. \end{DoxyCompactList}\item 
+std\+::vector$<$ int $>$ \hyperlink{classIMAPConnection_a88d3b9b7821ad6f2a09874015f8a9cfe}{get\+Allmails} (const std\+::string \&mailbox)
+\begin{DoxyCompactList}\small\item\em Get all mails. \end{DoxyCompactList}\item 
+bool \hyperlink{classIMAPConnection_a852132e646dcc4e658cc26135f452831}{move\+Mail} (const std\+::string \&oldmailbox, int uid, const std\+::string \&newmailbox)
+\begin{DoxyCompactList}\small\item\em Move mail. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} class. 
+
+Stores socket which connect to I\+M\+AP server, has methos which implemnet the I\+M\+AP commands 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classIMAPConnection_ad5bc450af38cf05e3c1747a3557939f8}\label{classIMAPConnection_ad5bc450af38cf05e3c1747a3557939f8}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{I\+M\+A\+P\+Connection()}{IMAPConnection()}}
+{\footnotesize\ttfamily I\+M\+A\+P\+Connection\+::\+I\+M\+A\+P\+Connection (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{hostname,  }\item[{int}]{port }\end{DoxyParamCaption})}
+
+
+
+Create I\+M\+AP connection. 
+
+Create socket, connect using ssl
+
+
+\begin{DoxyParams}{Parameters}
+{\em hostname} & The hostname of the I\+M\+AP server \\
+\hline
+{\em port} & The port of the I\+M\+AP server \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classIMAPConnection_a1029095092aa116c6afafdcafa2cb722}\label{classIMAPConnection_a1029095092aa116c6afafdcafa2cb722}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!create\+Mailbox@{create\+Mailbox}}
+\index{create\+Mailbox@{create\+Mailbox}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{create\+Mailbox()}{createMailbox()}}
+{\footnotesize\ttfamily bool I\+M\+A\+P\+Connection\+::create\+Mailbox (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mailbox }\end{DoxyParamCaption})}
+
+
+
+Create mailbox. 
+
+Create a mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em mailbox} & The mailbix to be created\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status whether mailbox is created 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_aba8f1dc3912b1655dfe5dd2fd76a1d7c}\label{classIMAPConnection_aba8f1dc3912b1655dfe5dd2fd76a1d7c}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!delete\+Mail@{delete\+Mail}}
+\index{delete\+Mail@{delete\+Mail}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{delete\+Mail()}{deleteMail()}}
+{\footnotesize\ttfamily bool I\+M\+A\+P\+Connection\+::delete\+Mail (\begin{DoxyParamCaption}\item[{\hyperlink{structMail}{Mail}}]{mail }\end{DoxyParamCaption})}
+
+
+
+Delete a mail. 
+
+Delete a mail given its details
+
+
+\begin{DoxyParams}{Parameters}
+{\em mail} & \hyperlink{structMail}{Mail} object containg details of the mail \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status whether the mail is deleted 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_ad74ab3895b9a999dfd4c4930e6a174e3}\label{classIMAPConnection_ad74ab3895b9a999dfd4c4930e6a174e3}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!delete\+Mailbox@{delete\+Mailbox}}
+\index{delete\+Mailbox@{delete\+Mailbox}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{delete\+Mailbox()}{deleteMailbox()}}
+{\footnotesize\ttfamily bool I\+M\+A\+P\+Connection\+::delete\+Mailbox (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mailbox }\end{DoxyParamCaption})}
+
+
+
+Delete mailbox. 
+
+Delete a mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em mailbox} & The mailbox to be deleted\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status whether mailbox is deleted 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_a88d3b9b7821ad6f2a09874015f8a9cfe}\label{classIMAPConnection_a88d3b9b7821ad6f2a09874015f8a9cfe}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!get\+Allmails@{get\+Allmails}}
+\index{get\+Allmails@{get\+Allmails}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{get\+Allmails()}{getAllmails()}}
+{\footnotesize\ttfamily std\+::vector$<$ int $>$ I\+M\+A\+P\+Connection\+::get\+Allmails (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mailbox }\end{DoxyParamCaption})}
+
+
+
+Get all mails. 
+
+Get all mail uids from aa mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em mailbox} & The mailbox \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+List of mail uids 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_a4c93cce25ad9fe1e0ab3950576cdab30}\label{classIMAPConnection_a4c93cce25ad9fe1e0ab3950576cdab30}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!get\+Count@{get\+Count}}
+\index{get\+Count@{get\+Count}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{get\+Count()}{getCount()}}
+{\footnotesize\ttfamily std\+::tuple$<$ int, int, int $>$ I\+M\+A\+P\+Connection\+::get\+Count (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mailbox }\end{DoxyParamCaption})}
+
+
+
+Get mail counts. 
+
+Get mail count in a mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em mailbox} & The mailbox name \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The exists, recent and unseen mails count 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_a0c9e1f027a1fb2b095f6dcdf8e4d8c47}\label{classIMAPConnection_a0c9e1f027a1fb2b095f6dcdf8e4d8c47}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!get\+Mail@{get\+Mail}}
+\index{get\+Mail@{get\+Mail}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{get\+Mail()}{getMail()}}
+{\footnotesize\ttfamily \hyperlink{structMail}{Mail} I\+M\+A\+P\+Connection\+::get\+Mail (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mailbox,  }\item[{const int}]{uid }\end{DoxyParamCaption})}
+
+
+
+Get mail from server. 
+
+Get a mail from mailbox with given uid
+
+
+\begin{DoxyParams}{Parameters}
+{\em mailbox} & The mailbox name \\
+\hline
+{\em uid} & The uid of the mail\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\hyperlink{structMail}{Mail} object of the mail 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_a24f78f745447f09d6b9a989f5434f151}\label{classIMAPConnection_a24f78f745447f09d6b9a989f5434f151}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!getmailboxes@{getmailboxes}}
+\index{getmailboxes@{getmailboxes}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{getmailboxes()}{getmailboxes()}}
+{\footnotesize\ttfamily std\+::vector$<$ std\+::string $>$ I\+M\+A\+P\+Connection\+::getmailboxes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get mailboxes. 
+
+Get mailboxes form the I\+M\+AP server \begin{DoxyReturn}{Returns}
+Vector of all the mailboxes from server 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_a91f2832ee1eb91fc441e37d473185a31}\label{classIMAPConnection_a91f2832ee1eb91fc441e37d473185a31}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!get\+Mails@{get\+Mails}}
+\index{get\+Mails@{get\+Mails}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{get\+Mails()}{getMails()}}
+{\footnotesize\ttfamily std\+::vector$<$ \hyperlink{structMail}{Mail} $>$ I\+M\+A\+P\+Connection\+::get\+Mails (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mailbox,  }\item[{std\+::vector$<$ int $>$}]{uids }\end{DoxyParamCaption})}
+
+
+
+Get mails form server. 
+
+Get mails from mailbox with given uids
+
+
+\begin{DoxyParams}{Parameters}
+{\em mailbox} & The mailbox name \\
+\hline
+{\em uids} & The uids of the mails\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+vector of mail objects 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_a0ddf65870bb9a995a3bd48a78d80265a}\label{classIMAPConnection_a0ddf65870bb9a995a3bd48a78d80265a}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!get\+Top\+Mails@{get\+Top\+Mails}}
+\index{get\+Top\+Mails@{get\+Top\+Mails}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{get\+Top\+Mails()}{getTopMails()}}
+{\footnotesize\ttfamily std\+::vector$<$ \hyperlink{structMail}{Mail} $>$ I\+M\+A\+P\+Connection\+::get\+Top\+Mails (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mailbox,  }\item[{int}]{k }\end{DoxyParamCaption})}
+
+
+
+Get top k mails. 
+
+Return all the top k mails in a mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em mailbox} & The mailbox name \\
+\hline
+{\em k} & The number of the mails to return\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+K mails from the mailbox 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_ac4fdf095774add4ec038c2738074c4b8}\label{classIMAPConnection_ac4fdf095774add4ec038c2738074c4b8}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!get\+Unseen\+Mails@{get\+Unseen\+Mails}}
+\index{get\+Unseen\+Mails@{get\+Unseen\+Mails}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{get\+Unseen\+Mails()}{getUnseenMails()}}
+{\footnotesize\ttfamily std\+::vector$<$ \hyperlink{structMail}{Mail} $>$ I\+M\+A\+P\+Connection\+::get\+Unseen\+Mails (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mailbox }\end{DoxyParamCaption})}
+
+
+
+Get unseen mails. 
+
+Return all the unseen mails in a mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em mailbox} & The mailbox name \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+List of unseen mails 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_a13d2dba8599abbbf52bc6e1eb4b7db82}\label{classIMAPConnection_a13d2dba8599abbbf52bc6e1eb4b7db82}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!login@{login}}
+\index{login@{login}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{login()}{login()}}
+{\footnotesize\ttfamily bool I\+M\+A\+P\+Connection\+::login (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{username,  }\item[{const std\+::string \&}]{password }\end{DoxyParamCaption})}
+
+
+
+Login in the server. 
+
+Authenticate with server
+
+
+\begin{DoxyParams}{Parameters}
+{\em username} & The username of the user \\
+\hline
+{\em password} & The password of the user\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Whether the login was successful 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_a250af5ae627fcdc73f3322237fe537f4}\label{classIMAPConnection_a250af5ae627fcdc73f3322237fe537f4}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!logout@{logout}}
+\index{logout@{logout}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{logout()}{logout()}}
+{\footnotesize\ttfamily bool I\+M\+A\+P\+Connection\+::logout (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Logout of the server. 
+
+Logout of the server \begin{DoxyReturn}{Returns}
+Whether logout was successful 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_a852132e646dcc4e658cc26135f452831}\label{classIMAPConnection_a852132e646dcc4e658cc26135f452831}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!move\+Mail@{move\+Mail}}
+\index{move\+Mail@{move\+Mail}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{move\+Mail()}{moveMail()}}
+{\footnotesize\ttfamily bool I\+M\+A\+P\+Connection\+::move\+Mail (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{oldmailbox,  }\item[{int}]{uid,  }\item[{const std\+::string \&}]{newmailbox }\end{DoxyParamCaption})}
+
+
+
+Move mail. 
+
+Move a mail from one mailbox to another
+
+
+\begin{DoxyParams}{Parameters}
+{\em oldmailbox} & Current mailbox \\
+\hline
+{\em uid} & Uid of the mail \\
+\hline
+{\em newmailbox} & Mailbox into which mail is to be mm=oved \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status whether mail was successfully moved 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_a64921072bad6e5ae342c54ee9945e3ad}\label{classIMAPConnection_a64921072bad6e5ae342c54ee9945e3ad}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!noop@{noop}}
+\index{noop@{noop}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{noop()}{noop()}}
+{\footnotesize\ttfamily bool I\+M\+A\+P\+Connection\+::noop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+No operatinon. 
+
+Keeps connection alive \begin{DoxyReturn}{Returns}
+Whether N\+O\+OP was successfully sent 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_a99c96d59a2ac6bef265c5b283aa2aade}\label{classIMAPConnection_a99c96d59a2ac6bef265c5b283aa2aade}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!rename\+Mailbox@{rename\+Mailbox}}
+\index{rename\+Mailbox@{rename\+Mailbox}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{rename\+Mailbox()}{renameMailbox()}}
+{\footnotesize\ttfamily bool I\+M\+A\+P\+Connection\+::rename\+Mailbox (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{oldmailbox,  }\item[{const std\+::string \&}]{newmailbox }\end{DoxyParamCaption})}
+
+
+
+Rename mailbox. 
+
+Rename a mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em oldmailbox} & Old name of the mailbox \\
+\hline
+{\em newmailbox} & New name of the mailbox\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status whether the mailbox was renamed 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_aef0dd4280dd0f09eaedc69d5dbd54af5}\label{classIMAPConnection_aef0dd4280dd0f09eaedc69d5dbd54af5}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!search@{search}}
+\index{search@{search}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{search()}{search()}}
+{\footnotesize\ttfamily std\+::vector$<$ int $>$ I\+M\+A\+P\+Connection\+::search (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mailbox,  }\item[{const std\+::string \&}]{from = {\ttfamily \char`\"{}\char`\"{}},  }\item[{const std\+::string \&}]{to = {\ttfamily \char`\"{}\char`\"{}},  }\item[{const std\+::string \&}]{subject = {\ttfamily \char`\"{}\char`\"{}},  }\item[{const std\+::string \&}]{text = {\ttfamily \char`\"{}\char`\"{}},  }\item[{const std\+::string \&}]{nottext = {\ttfamily \char`\"{}\char`\"{}},  }\item[{const std\+::string \&}]{since = {\ttfamily \char`\"{}\char`\"{}},  }\item[{const std\+::string \&}]{before = {\ttfamily \char`\"{}\char`\"{}} }\end{DoxyParamCaption})}
+
+
+
+Search mails. 
+
+Search mails from a mailbox with different search criteria
+
+
+\begin{DoxyParams}{Parameters}
+{\em mailbox} & The mailbox name \\
+\hline
+{\em from} & From criteria \\
+\hline
+{\em to} & To criteria \\
+\hline
+{\em subject} & Search in the subject of the mails \\
+\hline
+{\em text} & Search in the text of the mails \\
+\hline
+{\em nottext} & Search the mails not containing a text \\
+\hline
+{\em since} & Search mails since a date \\
+\hline
+{\em before} & Search mails before a date\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{[}description\mbox{]} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classIMAPConnection_aa1d8a0670efc9e15e1af37388f7e7726}\label{classIMAPConnection_aa1d8a0670efc9e15e1af37388f7e7726}} 
+\index{I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}!select@{select}}
+\index{select@{select}!I\+M\+A\+P\+Connection@{I\+M\+A\+P\+Connection}}
+\subsubsection{\texorpdfstring{select()}{select()}}
+{\footnotesize\ttfamily bool I\+M\+A\+P\+Connection\+::select (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mailbox }\end{DoxyParamCaption})}
+
+
+
+Select a mailbox. 
+
+Select a mailbox using I\+M\+AP protocol
+
+
+\begin{DoxyParams}{Parameters}
+{\em mailbox} & The mailbox name \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status if the mail is selected 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\hyperlink{imap_8h}{imap.\+h}\item 
+src/\hyperlink{imap_8cpp}{imap.\+cpp}\end{DoxyCompactItemize}

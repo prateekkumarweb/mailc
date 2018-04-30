@@ -1,0 +1,84 @@
+\hypertarget{cliutils_8cpp}{}\section{src/cliutils.cpp File Reference}
+\label{cliutils_8cpp}\index{src/cliutils.\+cpp@{src/cliutils.\+cpp}}
+{\ttfamily \#include \char`\"{}cliutils.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$cstdlib$>$}\newline
+Include dependency graph for cliutils.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{cliutils_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \hyperlink{cliutils_8cpp_a89975953b7d9023cb11eedbd419de5e5}{M\+A\+I\+L\+\_\+\+P\+A\+TH} ()
+\begin{DoxyCompactList}\small\item\em M\+A\+I\+L\+\_\+\+P\+A\+TH. \end{DoxyCompactList}\item 
+void \hyperlink{cliutils_8cpp_a972a43991062ce2daf1f0de24fbd6a67}{Get\+Req\+Dirs} (const std\+::string \&path, std\+::vector$<$ std\+::string $>$ \&dirs)
+\begin{DoxyCompactList}\small\item\em Get directories. \end{DoxyCompactList}\item 
+std\+::string \hyperlink{cliutils_8cpp_af6f98acaa9bd103b6b455201fd713d34}{tolowercase} (const std\+::string \&s)
+\begin{DoxyCompactList}\small\item\em Convert string to lowercase. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{cliutils_8cpp_adf7de668fd10266afe331f579a8178ee}\label{cliutils_8cpp_adf7de668fd10266afe331f579a8178ee}} 
+std\+::mt19937 \hyperlink{cliutils_8cpp_adf7de668fd10266afe331f579a8178ee}{rng} (\hyperlink{cliutils_8cpp_a7071b0092ad8c5b57d6cc40c5f803df5}{rd}())
+\begin{DoxyCompactList}\small\item\em Random generator object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{cliutils_8cpp_a7071b0092ad8c5b57d6cc40c5f803df5}\label{cliutils_8cpp_a7071b0092ad8c5b57d6cc40c5f803df5}} 
+std\+::random\+\_\+device \hyperlink{cliutils_8cpp_a7071b0092ad8c5b57d6cc40c5f803df5}{rd}
+\begin{DoxyCompactList}\small\item\em Random device. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{cliutils_8cpp_a972a43991062ce2daf1f0de24fbd6a67}\label{cliutils_8cpp_a972a43991062ce2daf1f0de24fbd6a67}} 
+\index{cliutils.\+cpp@{cliutils.\+cpp}!Get\+Req\+Dirs@{Get\+Req\+Dirs}}
+\index{Get\+Req\+Dirs@{Get\+Req\+Dirs}!cliutils.\+cpp@{cliutils.\+cpp}}
+\subsubsection{\texorpdfstring{Get\+Req\+Dirs()}{GetReqDirs()}}
+{\footnotesize\ttfamily void Get\+Req\+Dirs (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path,  }\item[{std\+::vector$<$ std\+::string $>$ \&}]{dirs }\end{DoxyParamCaption})}
+
+
+
+Get directories. 
+
+List all directories stored in path
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Path to search directories for \\
+\hline
+{\em dirs} & Appends directories to this vector \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{cliutils_8cpp_a89975953b7d9023cb11eedbd419de5e5}\label{cliutils_8cpp_a89975953b7d9023cb11eedbd419de5e5}} 
+\index{cliutils.\+cpp@{cliutils.\+cpp}!M\+A\+I\+L\+\_\+\+P\+A\+TH@{M\+A\+I\+L\+\_\+\+P\+A\+TH}}
+\index{M\+A\+I\+L\+\_\+\+P\+A\+TH@{M\+A\+I\+L\+\_\+\+P\+A\+TH}!cliutils.\+cpp@{cliutils.\+cpp}}
+\subsubsection{\texorpdfstring{M\+A\+I\+L\+\_\+\+P\+A\+T\+H()}{MAIL\_PATH()}}
+{\footnotesize\ttfamily std\+::string M\+A\+I\+L\+\_\+\+P\+A\+TH (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+M\+A\+I\+L\+\_\+\+P\+A\+TH. 
+
+Offline mail path i.\+e. {\ttfamily \$\+H\+O\+ME/.mailc} \begin{DoxyReturn}{Returns}
+Returns the offline mail path 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8cpp_af6f98acaa9bd103b6b455201fd713d34}\label{cliutils_8cpp_af6f98acaa9bd103b6b455201fd713d34}} 
+\index{cliutils.\+cpp@{cliutils.\+cpp}!tolowercase@{tolowercase}}
+\index{tolowercase@{tolowercase}!cliutils.\+cpp@{cliutils.\+cpp}}
+\subsubsection{\texorpdfstring{tolowercase()}{tolowercase()}}
+{\footnotesize\ttfamily std\+::string tolowercase (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{s }\end{DoxyParamCaption})}
+
+
+
+Convert string to lowercase. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & String object \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Lowercase of the input string 
+\end{DoxyReturn}
