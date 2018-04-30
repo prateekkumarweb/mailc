@@ -14,7 +14,8 @@
  */
 std::vector<std::string> vocabulory{"help",   "send",     "quit",   "read",
                                     "search", "delete",   "sync",   "list",
-                                    "create", "deletemb", "rename", "move"};
+                                    "create", "deletemb", "rename", "move",
+                                    "noop"};
 
 /**
  * @brief Command completion function
@@ -81,6 +82,7 @@ int main(int argc, char **argv) {
       std::cout << "deletemb\tDelete an existing mailbox" << std::endl;
       std::cout << "rename\t\tRename a mailbox" << std::endl;
       std::cout << "move\t\tMove a mail to another mailbox" << std::endl;
+      std::cout << "noop\t\tKeep connection open to server" << std::endl;
     } else if (cmd == "quit") {
       break;
     } else if (cmd == "list") {
@@ -197,6 +199,12 @@ int main(int argc, char **argv) {
         sync();
       } else {
         std::cout << "Mail could not be sent." << std::endl;
+      }
+    } else if (cmd == "noop") {
+      if (cliutils::noop(imap)) {
+        std::cout << "Noop successful" << std::endl;
+      } else {
+        std::cout << "Could not noop" << std::endl;
       }
     } else if (cmd == "sync") {
       if (cliutils::sync(imap)) {

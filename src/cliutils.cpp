@@ -302,3 +302,7 @@ std::vector<std::string> cliutils::getMailboxes() {
                  tolowercase);
   return mailboxes;
 }
+
+bool cliutils::noop(IMAPConnection &imap) {
+    return imap.noop();
+}

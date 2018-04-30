@@ -211,6 +211,13 @@ bool moveMail(IMAPConnection &imap, const std::string &oldmailbox, int uid,
  * @return List of mailboxed
  */
 std::vector<std::string> getMailboxes();
+
+/**
+ * @brief Noop imap
+ * @details Continue connection with imap server
+ * @return Status whether noop was successful
+ */
+bool noop(IMAPConnection &imap);
 };  // namespace cliutils
 
 #endif

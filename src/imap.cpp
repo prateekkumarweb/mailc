@@ -88,10 +88,10 @@ bool IMAPConnection::renameMailbox(const std::string &oldmailbox,
 }
 
 bool IMAPConnection::noop() {
-  std::string command = "a noop\r\n";
+  std::string command = id_string + " noop\r\n";
   socket.send(command);
   std::string response = socket.receive(rgx);
-  return check_response(response, "a");
+  return check_response(response, id_string);
 }
 
 std::tuple<int, int, int> IMAPConnection::getCount(const std::string &mailbox) {
