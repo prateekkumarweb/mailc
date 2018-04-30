@@ -191,31 +191,6 @@ std::vector<int> cliutils::searchMails(
     const std::string &to, const std::string &subject, const std::string &text,
     const std::string &nottext, const std::string &since,
     const std::string &before) {
-  if (since != "") {
-    std::string segment;
-    std::vector<std::string> sincelist;
-
-    while (std::getline(std::stringstream(since), segment, '-')) {
-      sincelist.push_back(segment);
-    }
-
-    if (sincelist.size() != 3 || sincelist[1].size() != 3) {
-      return std::vector<int>();
-    }
-  }
-
-  if (before != "") {
-    std::string segment;
-    std::vector<std::string> beforelist;
-
-    while (std::getline(std::stringstream(before), segment, '-')) {
-      beforelist.push_back(segment);
-    }
-
-    if (beforelist.size() != 3 || beforelist[1].size() != 3) {
-      return std::vector<int>();
-    }
-  }
 
   return imap.search(mailbox, from, to, subject, text, nottext, since, before);
 }
