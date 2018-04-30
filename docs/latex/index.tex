@@ -7,6 +7,45 @@ cd imap\_smtp\_client
 mkdir build
 cd build
 cmake ..
+\end{DoxyCode}
+
+
+\subsection*{How to run}
+
+
+\begin{DoxyCode}
+cd build
 ./client
 \end{DoxyCode}
- 
+
+
+\subsection*{How to use the C\+LI}
+
+In the cli, multiple commands are available to send, read, delete, etc. mails from differnet mail boxex by connecting to the server. The cli supports terminal like tab completion and history on up and down arrow keys.
+
+\subsubsection*{List of commands in the C\+LI}
+
+
+\begin{DoxyEnumerate}
+\item {\ttfamily create}\+: Creates a new mailbox using I\+M\+AP protocol.
+\item {\ttfamily delete}\+: Deletes a mail of given uid from a given mail using I\+M\+AP protocol.
+\item {\ttfamily deletemb}\+: Deletes a given mailbox using I\+M\+AP protocol.
+\item {\ttfamily help}\+: Lists all the commands.
+\item {\ttfamily list}\+: Lists all the mailboxes available offline.
+\item {\ttfamily move}\+: Moves a given mail from one mailbox to another using I\+M\+AP protocol.
+\item {\ttfamily noop}\+: No operation. Just to keep I\+M\+AP connection alive.
+\item {\ttfamily quit}\+: Quits the C\+LI.
+\item {\ttfamily read}\+: Read a mail stored offline.
+\item {\ttfamily rename}\+: Rename a mailbox using I\+M\+AP protocol.
+\item {\ttfamily search}\+: Search for mails using different criteria using I\+M\+AP protocol.
+\item {\ttfamily send}\+: Send a mail using S\+M\+TP protocol.
+\item {\ttfamily sync}\+: Sync mails across mailboxes using I\+M\+AP protocol.
+\end{DoxyEnumerate}
+
+\subsubsection*{Authors}
+
+
+\begin{DoxyItemize}
+\item Prateek Kumar
+\item Vaibhav Sinha 
+\end{DoxyItemize}
