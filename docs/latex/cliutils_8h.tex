@@ -1,0 +1,387 @@
+\hypertarget{cliutils_8h}{}\section{include/cliutils.h File Reference}
+\label{cliutils_8h}\index{include/cliutils.\+h@{include/cliutils.\+h}}
+{\ttfamily \#include $<$dirent.\+h$>$}\newline
+{\ttfamily \#include $<$experimental/filesystem$>$}\newline
+{\ttfamily \#include $<$fstream$>$}\newline
+{\ttfamily \#include $<$random$>$}\newline
+{\ttfamily \#include $<$sstream$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include \char`\"{}imap.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}smtp.\+h\char`\"{}}\newline
+Include dependency graph for cliutils.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{cliutils_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=252pt]{cliutils_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structconfig}{config}
+\begin{DoxyCompactList}\small\item\em Config structure used to store the details of the server and user. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \hyperlink{cliutils_8h_a89975953b7d9023cb11eedbd419de5e5}{M\+A\+I\+L\+\_\+\+P\+A\+TH} ()
+\begin{DoxyCompactList}\small\item\em M\+A\+I\+L\+\_\+\+P\+A\+TH. \end{DoxyCompactList}\item 
+void \hyperlink{cliutils_8h_a972a43991062ce2daf1f0de24fbd6a67}{Get\+Req\+Dirs} (const std\+::string \&path, std\+::vector$<$ std\+::string $>$ \&dirs)
+\begin{DoxyCompactList}\small\item\em Get directories. \end{DoxyCompactList}\item 
+std\+::string \hyperlink{cliutils_8h_af6f98acaa9bd103b6b455201fd713d34}{tolowercase} (const std\+::string \&s)
+\begin{DoxyCompactList}\small\item\em Convert string to lowercase. \end{DoxyCompactList}\item 
+bool \hyperlink{cliutils_8h_a0f8558066434c355e9ad6f4bcce90f17}{cliutils\+::sync} (\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&imap)
+\begin{DoxyCompactList}\small\item\em Syncs the messages from the server. \end{DoxyCompactList}\item 
+bool \hyperlink{cliutils_8h_abc7c1b32e5dcb85bbe3fcbabd5f5b969}{cliutils\+::send\+Mail} (\hyperlink{structconfig}{config} \&\hyperlink{structconfig}{config}, const std\+::string \&to, const std\+::string \&subject, const std\+::string \&msg)
+\begin{DoxyCompactList}\small\item\em Send a mail using S\+M\+TP. \end{DoxyCompactList}\item 
+bool \hyperlink{cliutils_8h_a98b1e24715d5fa5d12bda3f22bf2a621}{cliutils\+::delete\+Mail} (\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&imap, const std\+::string \&mailbox, int uid)
+\begin{DoxyCompactList}\small\item\em Deletes a mail. \end{DoxyCompactList}\item 
+\hyperlink{structMail}{Mail} \hyperlink{cliutils_8h_a660a0a035059deaf25f87d941ba13497}{cliutils\+::read\+Mail} (const std\+::string \&mailbox, int uid)
+\begin{DoxyCompactList}\small\item\em Read a mail. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{structMail}{Mail} $>$ \hyperlink{cliutils_8h_ad2c2a6c179d4848a8b63d563c835417f}{cliutils\+::get\+Mails} (\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&imap, const std\+::string \&mailbox, std\+::vector$<$ int $>$ uids)
+\begin{DoxyCompactList}\small\item\em Get Mails from the server. \end{DoxyCompactList}\item 
+std\+::vector$<$ int $>$ \hyperlink{cliutils_8h_a6c58669367647ec4677d06c2e021b1fc}{cliutils\+::search\+Mails} (\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&imap, const std\+::string \&mailbox, const std\+::string \&from, const std\+::string \&to, const std\+::string \&subject, const std\+::string \&text, const std\+::string \&nottext, const std\+::string \&since, const std\+::string \&before)
+\begin{DoxyCompactList}\small\item\em Search mails using imap search command. \end{DoxyCompactList}\item 
+bool \hyperlink{cliutils_8h_a4d1b5e281c24accf9ff70a4ea7cb32cd}{cliutils\+::create\+Mailbox} (\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&imap, const std\+::string \&mailbox)
+\begin{DoxyCompactList}\small\item\em Create mailbox. \end{DoxyCompactList}\item 
+bool \hyperlink{cliutils_8h_abc861e9fc4c19119f77ec46f8b710f39}{cliutils\+::delete\+Mailbox} (\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&imap, const std\+::string \&mailbox)
+\begin{DoxyCompactList}\small\item\em Delete mailbox. \end{DoxyCompactList}\item 
+bool \hyperlink{cliutils_8h_ac5793a0243f3dacf73137a699a04976c}{cliutils\+::rename\+Mailbox} (\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&imap, const std\+::string \&oldmailbox, const std\+::string \&newmailbox)
+\begin{DoxyCompactList}\small\item\em Rename mailbox. \end{DoxyCompactList}\item 
+bool \hyperlink{cliutils_8h_a9d223cc0393c24be2ba5c5d2cc2880d0}{cliutils\+::move\+Mail} (\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&imap, const std\+::string \&oldmailbox, int uid, const std\+::string \&newmailbox)
+\begin{DoxyCompactList}\small\item\em Move mail. \end{DoxyCompactList}\item 
+std\+::vector$<$ std\+::string $>$ \hyperlink{cliutils_8h_ae49892a449492f76ddb2319534659072}{cliutils\+::get\+Mailboxes} ()
+\begin{DoxyCompactList}\small\item\em List mailboxes. \end{DoxyCompactList}\item 
+bool \hyperlink{cliutils_8h_aa963e82596d70aacc2a79a1829ee4b8d}{cliutils\+::noop} (\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&imap)
+\begin{DoxyCompactList}\small\item\em Noop imap. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{cliutils_8h_file_a4d1b5e281c24accf9ff70a4ea7cb32cd}\label{cliutils_8h_file_a4d1b5e281c24accf9ff70a4ea7cb32cd}} 
+\index{cliutils.\+h@{cliutils.\+h}!create\+Mailbox@{create\+Mailbox}}
+\index{create\+Mailbox@{create\+Mailbox}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{create\+Mailbox()}{createMailbox()}}
+{\footnotesize\ttfamily bool cliutils\+::create\+Mailbox (\begin{DoxyParamCaption}\item[{\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&}]{imap,  }\item[{const std\+::string \&}]{mailbox }\end{DoxyParamCaption})}
+
+
+
+Create mailbox. 
+
+Create a mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em imap} & \hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} object \\
+\hline
+{\em mailbox} & The mailbix to be created\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status whether mailbox is created 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_file_a98b1e24715d5fa5d12bda3f22bf2a621}\label{cliutils_8h_file_a98b1e24715d5fa5d12bda3f22bf2a621}} 
+\index{cliutils.\+h@{cliutils.\+h}!delete\+Mail@{delete\+Mail}}
+\index{delete\+Mail@{delete\+Mail}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{delete\+Mail()}{deleteMail()}}
+{\footnotesize\ttfamily bool cliutils\+::delete\+Mail (\begin{DoxyParamCaption}\item[{\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&}]{imap,  }\item[{const std\+::string \&}]{mailbox,  }\item[{int}]{uid }\end{DoxyParamCaption})}
+
+
+
+Deletes a mail. 
+
+Deletes the mail with given uid from given mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em imap} & \hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} to send the delete command \\
+\hline
+{\em mailbox} & The mailbox from which the mail is to be deleted \\
+\hline
+{\em uid} & The uid of the mail to be deleted \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Whether the mail was sucessfully deleted or not 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_file_abc861e9fc4c19119f77ec46f8b710f39}\label{cliutils_8h_file_abc861e9fc4c19119f77ec46f8b710f39}} 
+\index{cliutils.\+h@{cliutils.\+h}!delete\+Mailbox@{delete\+Mailbox}}
+\index{delete\+Mailbox@{delete\+Mailbox}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{delete\+Mailbox()}{deleteMailbox()}}
+{\footnotesize\ttfamily bool cliutils\+::delete\+Mailbox (\begin{DoxyParamCaption}\item[{\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&}]{imap,  }\item[{const std\+::string \&}]{mailbox }\end{DoxyParamCaption})}
+
+
+
+Delete mailbox. 
+
+Delete a mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em imap} & \hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} object \\
+\hline
+{\em mailbox} & The mailbox to be deleted\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status whether mailbox is deleted 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_file_ae49892a449492f76ddb2319534659072}\label{cliutils_8h_file_ae49892a449492f76ddb2319534659072}} 
+\index{cliutils.\+h@{cliutils.\+h}!get\+Mailboxes@{get\+Mailboxes}}
+\index{get\+Mailboxes@{get\+Mailboxes}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{get\+Mailboxes()}{getMailboxes()}}
+{\footnotesize\ttfamily std\+::vector$<$ std\+::string $>$ cliutils\+::get\+Mailboxes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+List mailboxes. 
+
+List all the mailboxes available offline \begin{DoxyReturn}{Returns}
+List of mailboxed 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_file_ad2c2a6c179d4848a8b63d563c835417f}\label{cliutils_8h_file_ad2c2a6c179d4848a8b63d563c835417f}} 
+\index{cliutils.\+h@{cliutils.\+h}!get\+Mails@{get\+Mails}}
+\index{get\+Mails@{get\+Mails}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{get\+Mails()}{getMails()}}
+{\footnotesize\ttfamily std\+::vector$<$ \hyperlink{structMail}{Mail} $>$ cliutils\+::get\+Mails (\begin{DoxyParamCaption}\item[{\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&}]{imap,  }\item[{const std\+::string \&}]{mailbox,  }\item[{std\+::vector$<$ int $>$}]{uids }\end{DoxyParamCaption})}
+
+
+
+Get Mails from the server. 
+
+Fetches mails from imap server in a given mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em imap} & \hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} object \\
+\hline
+{\em mailbox} & Mailbox from which mails are to be fetched \\
+\hline
+{\em uids} & The uids of the mails which are to be fetched \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Vector of \hyperlink{structMail}{Mail} objects. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_a972a43991062ce2daf1f0de24fbd6a67}\label{cliutils_8h_a972a43991062ce2daf1f0de24fbd6a67}} 
+\index{cliutils.\+h@{cliutils.\+h}!Get\+Req\+Dirs@{Get\+Req\+Dirs}}
+\index{Get\+Req\+Dirs@{Get\+Req\+Dirs}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{Get\+Req\+Dirs()}{GetReqDirs()}}
+{\footnotesize\ttfamily void Get\+Req\+Dirs (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path,  }\item[{std\+::vector$<$ std\+::string $>$ \&}]{dirs }\end{DoxyParamCaption})}
+
+
+
+Get directories. 
+
+List all directories stored in path
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Path to search directories for \\
+\hline
+{\em dirs} & Appends directories to this vector \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{cliutils_8h_a89975953b7d9023cb11eedbd419de5e5}\label{cliutils_8h_a89975953b7d9023cb11eedbd419de5e5}} 
+\index{cliutils.\+h@{cliutils.\+h}!M\+A\+I\+L\+\_\+\+P\+A\+TH@{M\+A\+I\+L\+\_\+\+P\+A\+TH}}
+\index{M\+A\+I\+L\+\_\+\+P\+A\+TH@{M\+A\+I\+L\+\_\+\+P\+A\+TH}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{M\+A\+I\+L\+\_\+\+P\+A\+T\+H()}{MAIL\_PATH()}}
+{\footnotesize\ttfamily std\+::string M\+A\+I\+L\+\_\+\+P\+A\+TH (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+M\+A\+I\+L\+\_\+\+P\+A\+TH. 
+
+Offline mail path i.\+e. {\ttfamily \$\+H\+O\+ME/.mailc} \begin{DoxyReturn}{Returns}
+Returns the offline mail path 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_file_a9d223cc0393c24be2ba5c5d2cc2880d0}\label{cliutils_8h_file_a9d223cc0393c24be2ba5c5d2cc2880d0}} 
+\index{cliutils.\+h@{cliutils.\+h}!move\+Mail@{move\+Mail}}
+\index{move\+Mail@{move\+Mail}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{move\+Mail()}{moveMail()}}
+{\footnotesize\ttfamily bool cliutils\+::move\+Mail (\begin{DoxyParamCaption}\item[{\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&}]{imap,  }\item[{const std\+::string \&}]{oldmailbox,  }\item[{int}]{uid,  }\item[{const std\+::string \&}]{newmailbox }\end{DoxyParamCaption})}
+
+
+
+Move mail. 
+
+Move a mail from one mailbox to another
+
+
+\begin{DoxyParams}{Parameters}
+{\em imap} & \hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} object \\
+\hline
+{\em oldmailbox} & Current mailbox of the mail \\
+\hline
+{\em uid} & The uid of the mail \\
+\hline
+{\em newmailbox} & Mailbox to move the mail into \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status whether the mail was moved or not 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_file_aa963e82596d70aacc2a79a1829ee4b8d}\label{cliutils_8h_file_aa963e82596d70aacc2a79a1829ee4b8d}} 
+\index{cliutils.\+h@{cliutils.\+h}!noop@{noop}}
+\index{noop@{noop}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{noop()}{noop()}}
+{\footnotesize\ttfamily bool cliutils\+::noop (\begin{DoxyParamCaption}\item[{\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&}]{imap }\end{DoxyParamCaption})}
+
+
+
+Noop imap. 
+
+Continue connection with imap server \begin{DoxyReturn}{Returns}
+Status whether noop was successful 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_file_a660a0a035059deaf25f87d941ba13497}\label{cliutils_8h_file_a660a0a035059deaf25f87d941ba13497}} 
+\index{cliutils.\+h@{cliutils.\+h}!read\+Mail@{read\+Mail}}
+\index{read\+Mail@{read\+Mail}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{read\+Mail()}{readMail()}}
+{\footnotesize\ttfamily \hyperlink{structMail}{Mail} cliutils\+::read\+Mail (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mailbox,  }\item[{int}]{uid }\end{DoxyParamCaption})}
+
+
+
+Read a mail. 
+
+Read an email stored offline
+
+
+\begin{DoxyParams}{Parameters}
+{\em mailbox} & The mailbox from which the mail is to be read \\
+\hline
+{\em uid} & The uid of the mail\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The \hyperlink{structMail}{Mail} object containg the mail details 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_file_ac5793a0243f3dacf73137a699a04976c}\label{cliutils_8h_file_ac5793a0243f3dacf73137a699a04976c}} 
+\index{cliutils.\+h@{cliutils.\+h}!rename\+Mailbox@{rename\+Mailbox}}
+\index{rename\+Mailbox@{rename\+Mailbox}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{rename\+Mailbox()}{renameMailbox()}}
+{\footnotesize\ttfamily bool cliutils\+::rename\+Mailbox (\begin{DoxyParamCaption}\item[{\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&}]{imap,  }\item[{const std\+::string \&}]{oldmailbox,  }\item[{const std\+::string \&}]{newmailbox }\end{DoxyParamCaption})}
+
+
+
+Rename mailbox. 
+
+Rename a mailbox
+
+
+\begin{DoxyParams}{Parameters}
+{\em imap} & \hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} object \\
+\hline
+{\em oldmailbox} & Old name of the mailbox \\
+\hline
+{\em newmailbox} & New name of the mailbox \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status whether the mailbox was renamed 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_file_a6c58669367647ec4677d06c2e021b1fc}\label{cliutils_8h_file_a6c58669367647ec4677d06c2e021b1fc}} 
+\index{cliutils.\+h@{cliutils.\+h}!search\+Mails@{search\+Mails}}
+\index{search\+Mails@{search\+Mails}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{search\+Mails()}{searchMails()}}
+{\footnotesize\ttfamily std\+::vector$<$ int $>$ cliutils\+::search\+Mails (\begin{DoxyParamCaption}\item[{\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&}]{imap,  }\item[{const std\+::string \&}]{mailbox,  }\item[{const std\+::string \&}]{from,  }\item[{const std\+::string \&}]{to,  }\item[{const std\+::string \&}]{subject,  }\item[{const std\+::string \&}]{text,  }\item[{const std\+::string \&}]{nottext,  }\item[{const std\+::string \&}]{since,  }\item[{const std\+::string \&}]{before }\end{DoxyParamCaption})}
+
+
+
+Search mails using imap search command. 
+
+Search mails based on various search filters
+
+
+\begin{DoxyParams}{Parameters}
+{\em imap} & I\+M\+A\+P\+Connectio object \\
+\hline
+{\em mailbox} & Mailbox to search mails from \\
+\hline
+{\em from} & Search mails received from \\
+\hline
+{\em to} & Search mails sent to \\
+\hline
+{\em subject} & Search mails containg a text in subject \\
+\hline
+{\em text} & Search the mails containing a text in body \\
+\hline
+{\em nottext} & Search the mails not containing a text \\
+\hline
+{\em since} & Search the mails since a date \\
+\hline
+{\em before} & Search the mails before a date \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+All the uids of the mail matching the search filters 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_file_abc7c1b32e5dcb85bbe3fcbabd5f5b969}\label{cliutils_8h_file_abc7c1b32e5dcb85bbe3fcbabd5f5b969}} 
+\index{cliutils.\+h@{cliutils.\+h}!send\+Mail@{send\+Mail}}
+\index{send\+Mail@{send\+Mail}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{send\+Mail()}{sendMail()}}
+{\footnotesize\ttfamily bool cliutils\+::send\+Mail (\begin{DoxyParamCaption}\item[{\hyperlink{structconfig}{config} \&}]{config,  }\item[{const std\+::string \&}]{to,  }\item[{const std\+::string \&}]{subject,  }\item[{const std\+::string \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Send a mail using S\+M\+TP. 
+
+This function creates an S\+M\+TP Connection and send the mail to using S\+M\+TP protocol.
+
+
+\begin{DoxyParams}{Parameters}
+{\em config} & Details about server and user. \\
+\hline
+{\em to} & To mail address \\
+\hline
+{\em subject} & Subject of the mail \\
+\hline
+{\em msg} & The body of the mail \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Whether the mail was sent successfully or not. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_file_a0f8558066434c355e9ad6f4bcce90f17}\label{cliutils_8h_file_a0f8558066434c355e9ad6f4bcce90f17}} 
+\index{cliutils.\+h@{cliutils.\+h}!sync@{sync}}
+\index{sync@{sync}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{sync()}{sync()}}
+{\footnotesize\ttfamily bool cliutils\+::sync (\begin{DoxyParamCaption}\item[{\hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} \&}]{imap }\end{DoxyParamCaption})}
+
+
+
+Syncs the messages from the server. 
+
+This function syncs the messages from the server and are stored \$\+H\+O\+ME/.mailc directory
+
+
+\begin{DoxyParams}{Parameters}
+{\em imap} & \hyperlink{classIMAPConnection}{I\+M\+A\+P\+Connection} object to sync messages from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Whether the sync was successful or not. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{cliutils_8h_af6f98acaa9bd103b6b455201fd713d34}\label{cliutils_8h_af6f98acaa9bd103b6b455201fd713d34}} 
+\index{cliutils.\+h@{cliutils.\+h}!tolowercase@{tolowercase}}
+\index{tolowercase@{tolowercase}!cliutils.\+h@{cliutils.\+h}}
+\subsubsection{\texorpdfstring{tolowercase()}{tolowercase()}}
+{\footnotesize\ttfamily std\+::string tolowercase (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{s }\end{DoxyParamCaption})}
+
+
+
+Convert string to lowercase. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & String object \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Lowercase of the input string 
+\end{DoxyReturn}

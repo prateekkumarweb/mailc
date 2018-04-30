@@ -1,0 +1,126 @@
+\hypertarget{classSocket}{}\section{Socket Class Reference}
+\label{classSocket}\index{Socket@{Socket}}
+
+
+\hyperlink{classSocket}{Socket} class.  
+
+
+
+
+{\ttfamily \#include $<$socket.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::tuple$<$ bool, std\+::string $>$ \hyperlink{classSocket_a5bea2a5422628c243dda71607bc34e7b}{create} (std\+::string hostname, int port)
+\begin{DoxyCompactList}\small\item\em Create function creates a socket. \end{DoxyCompactList}\item 
+std\+::tuple$<$ bool, std\+::string $>$ \hyperlink{classSocket_a4af3d26d591ec86509d7ea7a700e4c66}{create\+S\+SL} ()
+\begin{DoxyCompactList}\small\item\em Create\+S\+SL function creates a wrapper of Open\+S\+SL over the socket. \end{DoxyCompactList}\item 
+bool \hyperlink{classSocket_a51839591e6a25799d62170ac8b105348}{send} (const std\+::string \&s)
+\begin{DoxyCompactList}\small\item\em Send function sends a message to the server. \end{DoxyCompactList}\item 
+std\+::string \hyperlink{classSocket_a93675446d84c9856a4d7493f99d1e064}{receive} ()
+\begin{DoxyCompactList}\small\item\em Receive function receives a message from the server. \end{DoxyCompactList}\item 
+std\+::string \hyperlink{classSocket_af96bcd8ddc3bc16f451a6142fff0ddde}{receive} (std\+::regex rgx)
+\begin{DoxyCompactList}\small\item\em Receive function receives a message from the server. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classSocket}{Socket} class. 
+
+\hyperlink{classSocket}{Socket} class that creates T\+CP connection to a server and saves the state, has methods to send and receive messages from server. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classSocket_a5bea2a5422628c243dda71607bc34e7b}\label{classSocket_a5bea2a5422628c243dda71607bc34e7b}} 
+\index{Socket@{Socket}!create@{create}}
+\index{create@{create}!Socket@{Socket}}
+\subsubsection{\texorpdfstring{create()}{create()}}
+{\footnotesize\ttfamily std\+::tuple$<$ bool, std\+::string $>$ Socket\+::create (\begin{DoxyParamCaption}\item[{std\+::string}]{hostname,  }\item[{int}]{port }\end{DoxyParamCaption})}
+
+
+
+Create function creates a socket. 
+
+Create function creates a T\+CP Connection over which the messages and sent to and received from.
+
+
+\begin{DoxyParams}{Parameters}
+{\em hostname} & The hostname of the server to connect to. \\
+\hline
+{\em port} & The port of the server to connect to.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status of creation and any error message if failed to create socket. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSocket_a4af3d26d591ec86509d7ea7a700e4c66}\label{classSocket_a4af3d26d591ec86509d7ea7a700e4c66}} 
+\index{Socket@{Socket}!create\+S\+SL@{create\+S\+SL}}
+\index{create\+S\+SL@{create\+S\+SL}!Socket@{Socket}}
+\subsubsection{\texorpdfstring{create\+S\+S\+L()}{createSSL()}}
+{\footnotesize\ttfamily std\+::tuple$<$ bool, std\+::string $>$ Socket\+::create\+S\+SL (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Create\+S\+SL function creates a wrapper of Open\+S\+SL over the socket. 
+
+This enables to connect to server using T\+L\+Sv1.\+2. It retrieves the certificate of the server and performs T\+LS handshake. \begin{DoxyReturn}{Returns}
+Satus of ssl connection and error message if failed. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSocket_a93675446d84c9856a4d7493f99d1e064}\label{classSocket_a93675446d84c9856a4d7493f99d1e064}} 
+\index{Socket@{Socket}!receive@{receive}}
+\index{receive@{receive}!Socket@{Socket}}
+\subsubsection{\texorpdfstring{receive()}{receive()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily std\+::string Socket\+::receive (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Receive function receives a message from the server. 
+
+A thread receives in parallel and stores the message in a queue from which this function returns one. \begin{DoxyReturn}{Returns}
+The message received from the server. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSocket_af96bcd8ddc3bc16f451a6142fff0ddde}\label{classSocket_af96bcd8ddc3bc16f451a6142fff0ddde}} 
+\index{Socket@{Socket}!receive@{receive}}
+\index{receive@{receive}!Socket@{Socket}}
+\subsubsection{\texorpdfstring{receive()}{receive()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily std\+::string Socket\+::receive (\begin{DoxyParamCaption}\item[{std\+::regex}]{rgx }\end{DoxyParamCaption})}
+
+
+
+Receive function receives a message from the server. 
+
+This function pops all those messages form the queues until some message matches the regex provided.
+
+
+\begin{DoxyParams}{Parameters}
+{\em rgx} & The regex which should be matched with message. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The message received form the server. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSocket_a51839591e6a25799d62170ac8b105348}\label{classSocket_a51839591e6a25799d62170ac8b105348}} 
+\index{Socket@{Socket}!send@{send}}
+\index{send@{send}!Socket@{Socket}}
+\subsubsection{\texorpdfstring{send()}{send()}}
+{\footnotesize\ttfamily bool Socket\+::send (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{s }\end{DoxyParamCaption})}
+
+
+
+Send function sends a message to the server. 
+
+The message is sent to the server over a T\+CP connection.
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & The message that is to be sent. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status whether the send was successful. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\hyperlink{socket_8h}{socket.\+h}\item 
+src/\hyperlink{socket_8cpp}{socket.\+cpp}\end{DoxyCompactItemize}

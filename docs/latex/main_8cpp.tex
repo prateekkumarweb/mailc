@@ -1,0 +1,117 @@
+\hypertarget{main_8cpp}{}\section{src/main.cpp File Reference}
+\label{main_8cpp}\index{src/main.\+cpp@{src/main.\+cpp}}
+{\ttfamily \#include \char`\"{}cliutils.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}imap.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}smtp.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$readline/history.\+h$>$}\newline
+{\ttfamily \#include $<$readline/readline.\+h$>$}\newline
+Include dependency graph for main.\+cpp\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+char $\ast$$\ast$ \hyperlink{main_8cpp_a597c9473c751029ee71a0d468862f280}{command\+\_\+completion} (const char $\ast$text, int start, int end)
+\begin{DoxyCompactList}\small\item\em Command completion function. \end{DoxyCompactList}\item 
+int \hyperlink{main_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The mail functiom. \end{DoxyCompactList}\item 
+char $\ast$ \hyperlink{main_8cpp_a389022a6c7bfb51f750434f0378a0790}{command\+\_\+generator} (const char $\ast$text, int state)
+\begin{DoxyCompactList}\small\item\em Generates next possible command. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ std\+::string $>$ \hyperlink{main_8cpp_a31e7caa9c9459b69d95aab5b004c2261}{vocabulory}
+\begin{DoxyCompactList}\small\item\em Vocabulory that will be used by readline. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{main_8cpp_a597c9473c751029ee71a0d468862f280}\label{main_8cpp_a597c9473c751029ee71a0d468862f280}} 
+\index{main.\+cpp@{main.\+cpp}!command\+\_\+completion@{command\+\_\+completion}}
+\index{command\+\_\+completion@{command\+\_\+completion}!main.\+cpp@{main.\+cpp}}
+\subsubsection{\texorpdfstring{command\+\_\+completion()}{command\_completion()}}
+{\footnotesize\ttfamily char $\ast$$\ast$ command\+\_\+completion (\begin{DoxyParamCaption}\item[{const char $\ast$}]{text,  }\item[{int}]{start,  }\item[{int}]{end }\end{DoxyParamCaption})}
+
+
+
+Command completion function. 
+
+This function will be called by readline library
+
+
+\begin{DoxyParams}{Parameters}
+{\em text} & Current text input by user \\
+\hline
+{\em start} & Start index \\
+\hline
+{\em end} & End index \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Array of matching commands 
+\end{DoxyReturn}
+\mbox{\Hypertarget{main_8cpp_a389022a6c7bfb51f750434f0378a0790}\label{main_8cpp_a389022a6c7bfb51f750434f0378a0790}} 
+\index{main.\+cpp@{main.\+cpp}!command\+\_\+generator@{command\+\_\+generator}}
+\index{command\+\_\+generator@{command\+\_\+generator}!main.\+cpp@{main.\+cpp}}
+\subsubsection{\texorpdfstring{command\+\_\+generator()}{command\_generator()}}
+{\footnotesize\ttfamily char$\ast$ command\+\_\+generator (\begin{DoxyParamCaption}\item[{const char $\ast$}]{text,  }\item[{int}]{state }\end{DoxyParamCaption})}
+
+
+
+Generates next possible command. 
+
+Generates command that will be used by readline to give suggestion at cli
+
+
+\begin{DoxyParams}{Parameters}
+{\em text} & Text input by user \\
+\hline
+{\em state} & State of the generator\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Next possible matching command, null otherwise 
+\end{DoxyReturn}
+\mbox{\Hypertarget{main_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{main_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+\index{main.\+cpp@{main.\+cpp}!main@{main}}
+\index{main@{main}!main.\+cpp@{main.\+cpp}}
+\subsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+
+
+The mail functiom. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & Number of cli arguments \\
+\hline
+{\em argv} & List of cli arguments\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns 0 on exit 
+\end{DoxyReturn}
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{main_8cpp_a31e7caa9c9459b69d95aab5b004c2261}\label{main_8cpp_a31e7caa9c9459b69d95aab5b004c2261}} 
+\index{main.\+cpp@{main.\+cpp}!vocabulory@{vocabulory}}
+\index{vocabulory@{vocabulory}!main.\+cpp@{main.\+cpp}}
+\subsubsection{\texorpdfstring{vocabulory}{vocabulory}}
+{\footnotesize\ttfamily std\+::vector$<$std\+::string$>$ vocabulory}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+\{\textcolor{stringliteral}{"help"},   \textcolor{stringliteral}{"send"},     \textcolor{stringliteral}{"quit"},   \textcolor{stringliteral}{"read"},
+                                    \textcolor{stringliteral}{"search"}, \textcolor{stringliteral}{"delete"},   \textcolor{stringliteral}{"sync"},   \textcolor{stringliteral}{"list"},
+                                    \textcolor{stringliteral}{"create"}, \textcolor{stringliteral}{"deletemb"}, \textcolor{stringliteral}{"rename"}, \textcolor{stringliteral}{"move"},
+                                    \textcolor{stringliteral}{"noop"}\}
+\end{DoxyCode}
+
+
+Vocabulory that will be used by readline. 
+
