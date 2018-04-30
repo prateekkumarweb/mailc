@@ -67,7 +67,7 @@ bool cliutils::sync(IMAPConnection &imap) {
     if (std::find(mailboxes.begin(), mailboxes.end(), tolowercase(*it)) ==
         mailboxes.end()) {
       // Delete the mailbox (*it)
-      fs::remove(MAIL_PATH() + tolowercase(*it));
+      fs::remove_all(MAIL_PATH() + tolowercase(*it));
     }
   }
 
